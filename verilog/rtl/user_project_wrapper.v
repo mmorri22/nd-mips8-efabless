@@ -1,34 +1,3 @@
-// SPDX-FileCopyrightText: 2020 Efabless Corporation
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// SPDX-License-Identifier: Apache-2.0
-
-`default_nettype none
-/*
- *-------------------------------------------------------------
- *
- * user_project_wrapper
- *
- * This wrapper enumerates all of the pins available to the
- * user for the user project.
- *
- * An example user project is provided in this wrapper.  The
- * example should be removed and replaced with the actual
- * user project.
- *
- *-------------------------------------------------------------
- */
-
 module user_project_wrapper #(
     parameter BITS = 32
 ) (
@@ -67,45 +36,27 @@ module user_project_wrapper #(
 );
 
 /*--------------------------------------*/
-/* User project is instantiated  here   */
+/* Replaced with MIPS Example */
 /*--------------------------------------*/
 
-user_proj_example mprj (
-`ifdef USE_POWER_PINS
-	.vdd(vdd),	// User area 1 1.8V power
-	.vss(vss),	// User area 1 digital ground
-`endif
+	user_proj_example mprj(
 
-    .wb_clk_i(wb_clk_i),
-    .wb_rst_i(wb_rst_i),
+		/* Connect the vdd and vss to the risc module */
+		`ifdef USE_POWER_PINS
+			.vdd(vdd),	// User area 1 1.8V power
+			.vss(vss),	// User area 1 digital ground
+		`endif
+		
+		/* Inputs for wire and reset */
+		.wb_clk_i(wb_clk_i),
+		.wb_rst_i(wb_rst_i),
+		
+		// IO Pads
+		.io_in ({io_in[37:30]}),
+		.io_out({io_out[37:22]}),
+		.io_oeb({io_oeb[37:22]})
 
-    // MGMT SoC Wishbone Slave
-
-    .wbs_cyc_i(wbs_cyc_i),
-    .wbs_stb_i(wbs_stb_i),
-    .wbs_we_i(wbs_we_i),
-    .wbs_sel_i(wbs_sel_i),
-    .wbs_adr_i(wbs_adr_i),
-    .wbs_dat_i(wbs_dat_i),
-    .wbs_ack_o(wbs_ack_o),
-    .wbs_dat_o(wbs_dat_o),
-
-    // Logic Analyzer
-
-    .la_data_in(la_data_in),
-    .la_data_out(la_data_out),
-    .la_oenb (la_oenb),
-
-    // IO Pads
-
-    .io_in ({io_in[37:30],io_in[7:0]}),
-    .io_out({io_out[37:30],io_out[7:0]}),
-    .io_oeb({io_oeb[37:30],io_oeb[7:0]}),
-
-    // IRQ
-    .irq(user_irq)
-);
-
+	);
 endmodule	// user_project_wrapper
 
 `default_nettype wire

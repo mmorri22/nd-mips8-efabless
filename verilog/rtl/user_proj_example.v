@@ -1,156 +1,477 @@
-// SPDX-FileCopyrightText: 2020 Efabless Corporation
-//
-// Licensed under the Apache License, Version 2.0 (the "License");
-// you may not use this file except in compliance with the License.
-// You may obtain a copy of the License at
-//
-//      http://www.apache.org/licenses/LICENSE-2.0
-//
-// Unless required by applicable law or agreed to in writing, software
-// distributed under the License is distributed on an "AS IS" BASIS,
-// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-// See the License for the specific language governing permissions and
-// limitations under the License.
-// SPDX-License-Identifier: Apache-2.0
-
 `default_nettype none
-/*
- *-------------------------------------------------------------
- *
- * user_proj_example
- *
- * This is an example of a (trivially simple) user project,
- * showing how the user project can connect to the logic
- * analyzer, the wishbone bus, and the I/O pads.
- *
- * This project generates an integer count, which is output
- * on the user area GPIO pads (digital output only).  The
- * wishbone connection allows the project to be controlled
- * (start and stop) from the management SoC program.
- *
- * See the testbenches in directory "mprj_counter" for the
- * example programs that drive this user project.  The three
- * testbenches are "io_ports", "la_test1", and "la_test2".
- *
- *-------------------------------------------------------------
- */
 
 module user_proj_example #(
-    parameter BITS = 16
+	parameter AWIDTH=5, DWIDTH=8, BITS = 16
 )(
-`ifdef USE_POWER_PINS
-    inout vdd,	// User area 1 1.8V supply
-    inout vss,	// User area 1 digital ground
-`endif
 
-    // Wishbone Slave ports (WB MI A)
+	`ifdef USE_POWER_PINS
+		inout vdd,	// User area 1 1.8V supply
+		inout vss,	// User area 1 digital ground
+	`endif
+	
+    // Include the Caravel Ports to connect the inputs and outputs
     input wb_clk_i,
     input wb_rst_i,
-    input wbs_stb_i,
-    input wbs_cyc_i,
-    input wbs_we_i,
-    input [3:0] wbs_sel_i,
-    input [31:0] wbs_dat_i,
-    input [31:0] wbs_adr_i,
-    output wbs_ack_o,
-    output [31:0] wbs_dat_o,
-
-    // Logic Analyzer Signals
-    input  [63:0] la_data_in,
-    output [63:0] la_data_out,
-    input  [63:0] la_oenb,
 
     // IOs
-    input  [BITS-1:0] io_in,
+    input  [DWIDTH-1:0] io_in,
     output [BITS-1:0] io_out,
     output [BITS-1:0] io_oeb,
-
-    // IRQ
-    output [2:0] irq
 );
-    wire clk;
-    wire rst;
 
-    wire [BITS-1:0] rdata; 
-    wire [BITS-1:0] wdata;
-    wire [BITS-1:0] count;
+	/* For mapping the wb_clk_i and wb_rst_i to our clk and rst */
+    wire clk = wb_clk_i;
+    wire rst = !wb_rst_i;
 
-    wire valid;
-    wire [3:0] wstrb;
-    wire [BITS-1:0] la_write;
+	/* Output signals */
+	wire [DWIDTH-1:0] adr_out;
+	wire [DWIDTH-1:0] writedata_out;
+	
+	wire memread, memwrite;
+	
+	mips the_mips(
+		.clk(clk),
+		.reset(rst),
+		.memdata(io_in[DWIDTH-1:0]),
+		.adr(adr_out),
+		.writedata(writedata_out)
+	);
 
-    // WB MI A
-    assign valid = wbs_cyc_i && wbs_stb_i; 
-    assign wstrb = wbs_sel_i & {4{wbs_we_i}};
-    assign wbs_dat_o = {{(32-BITS){1'b0}}, rdata};
-    assign wdata = wbs_dat_i[BITS-1:0];
+	/* Map the wires to the io_out */
+	assign io_out[BITS-1:DWIDTH] = adr_out;
+	assign io_out[DWIDTH-1:0] = writedata_out;
 
-    // IO
-    assign io_out = count;
-    assign io_oeb = {(BITS){rst}};
-
-    // IRQ
-    assign irq = 3'b000;	// Unused
-
-    // LA
-    assign la_data_out = {{(64-BITS){1'b0}}, count};
-    // Assuming LA probes [61:46] are for controlling the count register  
-    assign la_write = ~la_oenb[61:62-BITS] & ~{BITS{valid}};
-    // Assuming LA probes [63:62] are for controlling the count clk & reset  
-    assign clk = (~la_oenb[62]) ? la_data_in[62]: wb_clk_i;
-    assign rst = (~la_oenb[63]) ? la_data_in[63]: wb_rst_i;
-
-    counter #(
-        .BITS(BITS)
-    ) counter(
-        .clk(clk),
-        .reset(rst),
-        .ready(wbs_ack_o),
-        .valid(valid),
-        .rdata(rdata),
-        .wdata(wbs_dat_i[BITS-1:0]),
-        .wstrb(wstrb),
-        .la_write(la_write),
-        .la_input(la_data_in[61:62-BITS]),
-        .count(count)
-    );
+	/* Setting io_oeb to 0 ensures outputs are always enabled */
+	assign io_oeb = 1'b0;
 
 endmodule
 
-module counter #(
-    parameter BITS = 16
-)(
-    input clk,
-    input reset,
-    input valid,
-    input [3:0] wstrb,
-    input [BITS-1:0] wdata,
-    input [BITS-1:0] la_write,
-    input [BITS-1:0] la_input,
-    output reg ready,
-    output reg [BITS-1:0] rdata,
-    output reg [BITS-1:0] count
-);
 
-    always @(posedge clk) begin
-        if (reset) begin
-            count <= 0;
-            ready <= 0;
-        end else begin
-            ready <= 1'b0;
-            if (~|la_write) begin
-                count <= count + 1;
-            end
-            if (valid && !ready) begin
-                ready <= 1'b1;
-                rdata <= count;
-                if (wstrb[0]) count[7:0]   <= wdata[7:0];
-                if (wstrb[1]) count[15:8]  <= wdata[15:8];
-            end else if (|la_write) begin
-                count <= la_write & la_input;
-            end
-        end
+// states and instructions
+
+  typedef enum logic [3:0] {FETCH1 = 4'b0000, FETCH2, FETCH3, FETCH4,
+                            DECODE, MEMADR, LBRD, LBWR, SBWR,
+                            RTYPEEX, RTYPEWR, BEQEX, JEX} statetype;
+  typedef enum logic [5:0] {LB    = 6'b100000,
+                            SB    = 6'b101000,
+                            RTYPE = 6'b000000,
+                            BEQ   = 6'b000100,
+                            J     = 6'b000010} opcode;
+  typedef enum logic [5:0] {ADD = 6'b100000,
+                            SUB = 6'b100010,
+                            AND = 6'b100100,
+                            OR  = 6'b100101,
+                            SLT = 6'b101010} functcode;
+
+
+// simplified MIPS processor
+module mips #(parameter WIDTH = 8, REGBITS = 3)
+             (input  logic             clk, reset, 
+              input  logic [WIDTH-1:0] memdata, 
+              output logic [WIDTH-1:0] adr, writedata);
+
+   logic [31:0] instr;
+   logic        zero, alusrca, memtoreg, iord, pcen, regwrite, regdst, memread, memwrite;
+   logic [1:0]  pcsrc, alusrcb;
+   logic [3:0]  irwrite;
+   logic [2:0]  alucontrol;
+   logic [5:0]  op, funct;
+ 
+   assign op = instr[31:26];      
+   assign funct = instr[5:0];  
+      
+   controller  cont(clk, reset, op, funct, zero, memread, memwrite, 
+                    alusrca, memtoreg, iord, pcen, regwrite, regdst,
+                    pcsrc, alusrcb, alucontrol, irwrite);
+   datapath    #(WIDTH, REGBITS) 
+               dp(clk, reset, memdata, alusrca, memtoreg, iord, pcen,
+                  regwrite, regdst, pcsrc, alusrcb, irwrite, alucontrol,
+                  zero, instr, adr, writedata);
+endmodule
+
+module controller(input logic clk, reset, 
+                  input  logic [5:0] op, funct,
+                  input  logic       zero, 
+                  output logic       memread, memwrite, alusrca,  
+                  output logic       memtoreg, iord, pcen, 
+                  output logic       regwrite, regdst, 
+                  output logic [1:0] pcsrc, alusrcb,
+                  output logic [2:0] alucontrol,
+                  output logic [3:0] irwrite);
+
+  statetype       state;
+  logic           pcwrite, branch;
+  logic     [1:0] aluop;
+
+  // control FSM
+  statelogic statelog(clk, reset, op, state);
+  outputlogic outputlog(state, memread, memwrite, alusrca,
+                        memtoreg, iord, 
+                        regwrite, regdst, pcsrc, alusrcb, irwrite, 
+                        pcwrite, branch, aluop);
+
+  // other control decoding
+  aludec  ac(aluop, funct, alucontrol);
+  assign pcen = pcwrite | (branch & zero); // program counter enable
+endmodule
+
+module statelogic(input  logic       clk, reset,
+                  input  logic [5:0] op,
+                  output statetype   state);
+
+  statetype nextstate;
+  
+  always_ff @(posedge clk)
+    if (reset) state <= FETCH1;
+    else       state <= nextstate;
+    
+  always_comb
+    begin
+      case (state)
+        FETCH1:  nextstate = FETCH2;
+        FETCH2:  nextstate = FETCH3;
+        FETCH3:  nextstate = FETCH4;
+        FETCH4:  nextstate = DECODE;
+        DECODE:  case(op)
+                   LB:      nextstate = MEMADR;
+                   SB:      nextstate = MEMADR;
+                   RTYPE:   nextstate = RTYPEEX;
+                   BEQ:     nextstate = BEQEX;
+                   J:       nextstate = JEX;
+                   default: nextstate = FETCH1; // should never happen
+                 endcase
+        MEMADR:  case(op)
+                   LB:      nextstate = LBRD;
+                   SB:      nextstate = SBWR;
+                   default: nextstate = FETCH1; // should never happen
+                 endcase
+        LBRD:    nextstate = LBWR;
+        LBWR:    nextstate = FETCH1;
+        SBWR:    nextstate = FETCH1;
+        RTYPEEX: nextstate = RTYPEWR;
+        RTYPEWR: nextstate = FETCH1;
+        BEQEX:   nextstate = FETCH1;
+        JEX:     nextstate = FETCH1;
+        default: nextstate = FETCH1; // should never happen
+      endcase
     end
-
 endmodule
+
+module outputlogic(input statetype state,
+                   output logic       memread, memwrite, alusrca,  
+                   output logic       memtoreg, iord, 
+                   output logic       regwrite, regdst, 
+                   output logic [1:0] pcsrc, alusrcb,
+                   output logic [3:0] irwrite,
+                   output logic       pcwrite, branch,
+                   output logic [1:0] aluop);
+
+  always_comb
+    begin
+      // set all outputs to zero, then 
+      // conditionally assert just the appropriate ones
+      irwrite = 4'b0000;
+      pcwrite = 0; branch = 0;
+      regwrite = 0; regdst = 0;
+      memread = 0; memwrite = 0;
+      alusrca = 0; alusrcb = 2'b00; aluop = 2'b00;
+      pcsrc = 2'b00;
+      iord = 0; memtoreg = 0;
+      case (state)
+        FETCH1: 
+          begin
+            memread = 1; 
+            irwrite = 4'b0001; 
+            alusrcb = 2'b01; 
+            pcwrite = 1;
+          end
+        FETCH2: 
+          begin
+            memread = 1;
+            irwrite = 4'b0010;
+            alusrcb = 2'b01;
+            pcwrite = 1;
+          end
+        FETCH3:
+          begin
+            memread = 1;
+            irwrite = 4'b0100;
+            alusrcb = 2'b01;
+            pcwrite = 1;
+          end
+        FETCH4:
+          begin
+            memread = 1;
+            irwrite = 4'b1000;
+            alusrcb = 2'b01;
+            pcwrite = 1;
+          end
+        DECODE: alusrcb = 2'b11;
+        MEMADR:
+          begin
+            alusrca = 1;
+            alusrcb = 2'b10;
+          end
+        LBRD:
+          begin
+            memread = 1;
+            iord    = 1;
+          end
+        LBWR:
+          begin
+            regwrite = 1;
+            memtoreg = 1;
+          end
+        SBWR:
+          begin
+            memwrite = 1;
+            iord     = 1;
+          end
+        RTYPEEX: 
+          begin
+            alusrca = 1;
+            aluop   = 2'b10;
+          end
+        RTYPEWR:
+          begin
+            regdst   = 1;
+            regwrite = 1;
+          end
+        BEQEX:
+          begin
+            alusrca = 1;
+            aluop   = 2'b01;
+            branch  = 1;
+            pcsrc   = 2'b01;
+          end
+        JEX:
+          begin
+            pcwrite  = 1;
+            pcsrc    = 2'b10;
+          end
+      endcase
+    end
+endmodule
+
+module aludec(input  logic [1:0] aluop, 
+              input  logic [5:0] funct, 
+              output logic [2:0] alucontrol);
+
+  always_comb
+    case (aluop)
+      2'b00: alucontrol = 3'b010;  // add for lb/sb/addi
+      2'b01: alucontrol = 3'b110;  // subtract (for beq)
+      default: case(funct)      // R-Type instructions
+                 ADD: alucontrol = 3'b010;
+                 SUB: alucontrol = 3'b110;
+                 AND: alucontrol = 3'b000;
+                 OR:  alucontrol = 3'b001;
+                 SLT: alucontrol = 3'b111;
+                 default:   alucontrol = 3'b101; // should never happen
+               endcase
+    endcase
+endmodule
+
+module datapath #(parameter WIDTH = 8, REGBITS = 3)
+                 (input  logic             clk, reset, 
+                  input  logic [WIDTH-1:0] memdata, 
+                  input  logic             alusrca, memtoreg, iord, 
+                  input  logic             pcen, regwrite, regdst,
+                  input  logic [1:0]       pcsrc, alusrcb, 
+                  input  logic [3:0]       irwrite, 
+                  input  logic [2:0]       alucontrol, 
+                  output logic             zero, 
+                  output logic [31:0]      instr, 
+                  output logic [WIDTH-1:0] adr, writedata);
+
+  logic [REGBITS-1:0] ra1, ra2, wa;
+  logic [WIDTH-1:0]   pc, nextpc, data, rd1, rd2, wd, a, srca, 
+                      srcb, aluresult, aluout, immx4;
+
+  logic [WIDTH-1:0] CONST_ZERO = 0;
+  logic [WIDTH-1:0] CONST_ONE =  1;
+
+  // shift left immediate field by 2
+  assign immx4 = {instr[WIDTH-3:0],2'b00};
+
+  // register file address fields
+  assign ra1 = instr[REGBITS+20:21];
+  assign ra2 = instr[REGBITS+15:16];
+  mux2       #(REGBITS) regmux(instr[REGBITS+15:16], 
+                               instr[REGBITS+10:11], regdst, wa);
+
+   // independent of bit width, load instruction into four 8-bit registers over four cycles
+  flopen     #(8)      ir0(clk, irwrite[0], memdata[7:0], instr[7:0]);
+  flopen     #(8)      ir1(clk, irwrite[1], memdata[7:0], instr[15:8]);
+  flopen     #(8)      ir2(clk, irwrite[2], memdata[7:0], instr[23:16]);
+  flopen     #(8)      ir3(clk, irwrite[3], memdata[7:0], instr[31:24]);
+
+  // datapath
+  flopenr    #(WIDTH)  pcreg(clk, reset, pcen, nextpc, pc);
+  flop       #(WIDTH)  datareg(clk, memdata, data);
+  flop       #(WIDTH)  areg(clk, rd1, a);
+  flop       #(WIDTH)  wrdreg(clk, rd2, writedata);
+  flop       #(WIDTH)  resreg(clk, aluresult, aluout);
+  mux2       #(WIDTH)  adrmux(pc, aluout, iord, adr);
+  mux2       #(WIDTH)  src1mux(pc, a, alusrca, srca);
+  mux4       #(WIDTH)  src2mux(writedata, CONST_ONE, instr[WIDTH-1:0], 
+                               immx4, alusrcb, srcb);
+  mux3       #(WIDTH)  pcmux(aluresult, aluout, immx4, 
+                             pcsrc, nextpc);
+  mux2       #(WIDTH)  wdmux(aluout, data, memtoreg, wd);
+  regfile    #(WIDTH,REGBITS) rf(clk, regwrite, ra1, ra2, 
+                                 wa, wd, rd1, rd2);
+  alu        #(WIDTH) alunit(srca, srcb, alucontrol, aluresult, zero);
+endmodule
+
+module alu #(parameter WIDTH = 8)
+            (input  logic [WIDTH-1:0] a, b, 
+             input  logic [2:0]       alucontrol, 
+             output logic [WIDTH-1:0] result,
+             output logic             zero);
+
+  logic [WIDTH-1:0] b2, andresult, orresult, sumresult, sltresult;
+
+  andN    andblock(a, b, andresult);
+  orN     orblock(a, b, orresult);
+  condinv binv(b, alucontrol[2], b2);
+  adder   addblock(a, b2, alucontrol[2], sumresult);
+  // slt should be 1 if most significant bit of sum is 1
+  assign sltresult = sumresult[WIDTH-1];
+
+  mux4 resultmux(andresult, orresult, sumresult, sltresult, alucontrol[1:0], result);
+  zerodetect #(WIDTH) zd(result, zero);
+endmodule
+
+module regfile #(parameter WIDTH = 8, REGBITS = 3)
+                (input  logic               clk, 
+                 input  logic               regwrite, 
+                 input  logic [REGBITS-1:0] ra1, ra2, wa, 
+                 input  logic [WIDTH-1:0]   wd, 
+                 output logic [WIDTH-1:0]   rd1, rd2);
+
+   logic [WIDTH-1:0] RAM [2**REGBITS-1:0];
+
+  // three ported register file
+  // read two ports combinationally
+  // write third port on rising edge of clock
+  // register 0 hardwired to 0
+  always @(posedge clk)
+    if (regwrite) RAM[wa] <= wd;
+
+  assign rd1 = ra1 ? RAM[ra1] : 0;
+  assign rd2 = ra2 ? RAM[ra2] : 0;
+endmodule
+
+module zerodetect #(parameter WIDTH = 8)
+                   (input  logic [WIDTH-1:0] a, 
+                    output logic             y);
+
+   assign y = (a==0);
+endmodule	
+
+module flop #(parameter WIDTH = 8)
+             (input  logic             clk, 
+              input  logic [WIDTH-1:0] d, 
+              output logic [WIDTH-1:0] q);
+
+  always_ff @(posedge clk)
+    q <= d;
+endmodule
+
+module flopen #(parameter WIDTH = 8)
+               (input  logic             clk, en,
+                input  logic [WIDTH-1:0] d, 
+                output logic [WIDTH-1:0] q);
+
+  always_ff @(posedge clk)
+    if (en) q <= d;
+endmodule
+
+module flopenr #(parameter WIDTH = 8)
+                (input  logic             clk, reset, en,
+                 input  logic [WIDTH-1:0] d, 
+                 output logic [WIDTH-1:0] q);
+ 
+  always_ff @(posedge clk)
+    if      (reset) q <= 0;
+    else if (en)    q <= d;
+endmodule
+
+module mux2 #(parameter WIDTH = 8)
+             (input  logic [WIDTH-1:0] d0, d1, 
+              input  logic             s, 
+              output logic [WIDTH-1:0] y);
+
+  assign y = s ? d1 : d0; 
+endmodule
+
+module mux3 #(parameter WIDTH = 8)
+             (input  logic [WIDTH-1:0] d0, d1, d2,
+              input  logic [1:0]       s, 
+              output logic [WIDTH-1:0] y);
+
+  always_comb 
+    casez (s)
+      2'b00: y = d0;
+      2'b01: y = d1;
+      2'b1?: y = d2;
+    endcase
+endmodule
+
+module mux4 #(parameter WIDTH = 8)
+             (input  logic [WIDTH-1:0] d0, d1, d2, d3,
+              input  logic [1:0]       s, 
+              output logic [WIDTH-1:0] y);
+
+  always_comb
+    case (s)
+      2'b00: y = d0;
+      2'b01: y = d1;
+      2'b10: y = d2;
+      2'b11: y = d3;
+    endcase
+endmodule
+
+module andN #(parameter WIDTH = 8)
+             (input  logic [WIDTH-1:0] a, b,
+              output logic [WIDTH-1:0] y);
+
+  assign y = a & b;
+endmodule
+
+module orN #(parameter WIDTH = 8)
+            (input  logic [WIDTH-1:0] a, b,
+             output logic [WIDTH-1:0] y);
+
+  assign y = a | b;
+endmodule
+
+module inv #(parameter WIDTH = 8)
+            (input  logic [WIDTH-1:0] a,
+             output logic [WIDTH-1:0] y);
+
+  assign y = ~a;
+endmodule
+
+module condinv #(parameter WIDTH = 8)
+                (input  logic [WIDTH-1:0] a,
+                 input  logic             invert,
+                 output logic [WIDTH-1:0] y);
+
+  logic [WIDTH-1:0] ab;
+
+  inv  inverter(a, ab);
+  mux2 invmux(a, ab, invert, y);
+endmodule
+
+module adder #(parameter WIDTH = 8)
+              (input  logic [WIDTH-1:0] a, b,
+               input  logic             cin,
+               output logic [WIDTH-1:0] y);
+
+  assign y = a + b + cin;
+endmodule
+
+/* End EFabless Harness project with `default_nettype wire */
 `default_nettype wire

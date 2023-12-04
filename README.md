@@ -1,10 +1,8 @@
-# Caravel User Project
+# GF180 MIPS Demo Project Example
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml)
+Developed by Matthew Morrison (matt.morrison@nd.edu) to demonstrate open source flow using the GF 180 
+flow using EFabless
 
-| :exclamation: Important Note            |
-|-----------------------------------------|
+The user_proj_example.v file contains a description of an 8-bit MIPS microprocessor with a datapath with a controller, 
 
-## Please fill in your project documentation in this README.md file 
 
-Refer to [README](docs/source/index.rst) for this sample project documentation. 

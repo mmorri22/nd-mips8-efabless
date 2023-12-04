@@ -52,9 +52,9 @@ module user_project_wrapper #(
 		.wb_rst_i(wb_rst_i),
 		
 		// IO Pads
-		.io_in ({io_in[37:30]}),
-		.io_out({io_out[37:22]}),
-		.io_oeb({io_oeb[37:22]})
+		.io_in ({io_in[7:0]}),
+		.io_out({io_in[15:0]}),
+		.io_oeb({io_in[15:0]})
 
 	);
 endmodule	// user_project_wrapper

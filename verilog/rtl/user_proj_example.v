@@ -16,12 +16,15 @@ module user_proj_example #(
     // IOs
     input  [DWIDTH-1:0] io_in,
     output [BITS-1:0] io_out,
-    output [BITS-1:0] io_oeb,
+	output [BITS-1:0] io_oeb
 );
 
 	/* For mapping the wb_clk_i and wb_rst_i to our clk and rst */
     wire clk = wb_clk_i;
     wire rst = !wb_rst_i;
+	
+	/* Set io_oeb to 0 to ensure all outputs are active */
+	assign io_oeb = 1'b0;
 
 	/* Output signals */
 	wire [DWIDTH-1:0] adr_out;
@@ -40,9 +43,6 @@ module user_proj_example #(
 	/* Map the wires to the io_out */
 	assign io_out[BITS-1:DWIDTH] = adr_out;
 	assign io_out[DWIDTH-1:0] = writedata_out;
-
-	/* Setting io_oeb to 0 ensures outputs are always enabled */
-	assign io_oeb = 1'b0;
 
 endmodule
 
@@ -343,6 +343,7 @@ module alu #(parameter WIDTH = 8)
   zerodetect #(WIDTH) zd(result, zero);
 endmodule
 
+
 module regfile #(parameter WIDTH = 8, REGBITS = 3)
                 (input  logic               clk, 
                  input  logic               regwrite, 
@@ -362,6 +363,7 @@ module regfile #(parameter WIDTH = 8, REGBITS = 3)
   assign rd1 = ra1 ? RAM[ra1] : 0;
   assign rd2 = ra2 ? RAM[ra2] : 0;
 endmodule
+
 
 module zerodetect #(parameter WIDTH = 8)
                    (input  logic [WIDTH-1:0] a, 

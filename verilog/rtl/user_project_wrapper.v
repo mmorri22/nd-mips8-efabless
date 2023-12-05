@@ -53,8 +53,8 @@ module user_project_wrapper #(
 		
 		// IO Pads
 		.io_in ({io_in[12:5]}),
-		.io_out({io_in[28:13]}),
-		.io_oeb({io_in[28:13]})
+		.io_out({io_out[28:13]}),
+		.io_oeb({io_out[28:13]})
 
 	);
 endmodule	// user_project_wrapper

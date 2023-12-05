@@ -16,7 +16,7 @@ module user_proj_example #(
     // IOs
     input  [DWIDTH-1:0] io_in,
     output [BITS-1:0] io_out,
-	output [BITS-1:0] io_oeb
+	output [BITS-1:0] io_oeb,
 );
 
 	/* For mapping the wb_clk_i and wb_rst_i to our clk and rst */
@@ -29,8 +29,6 @@ module user_proj_example #(
 	/* Output signals */
 	wire [DWIDTH-1:0] adr_out;
 	wire [DWIDTH-1:0] writedata_out;
-	
-	wire memread, memwrite;
 	
 	mips the_mips(
 		.clk(clk),

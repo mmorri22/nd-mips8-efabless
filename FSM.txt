@@ -33,28 +33,28 @@ CHECK_GUESS_4:
   else next_state = ALL_INCORRECT;
 
 CORRECT_0:
-  guessed_letters | 0b10000;
-  if (guessed_letters & 0b11111) next_state = WIN;
+  guessed_letters | 5'b10000;
+  if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_1:
-  guessed_letters | 0b01000;
-  if (guessed_letters & 0b11111) next_state = WIN;
+  guessed_letters | 5'b01000;
+  if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_2:
-  guessed_letters | 0b00100;
-  if (guessed_letters & 0b11111) next_state = WIN;
+  guessed_letters | 5'b00100;
+  if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_3:
-  guessed_letters | 0b00010;
-  if (guessed_letters & 0b11111) next_state = WIN;
+  guessed_letters | 5'b00010;
+  if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_4:
-  guessed_letters | 0b00001;
-  if (guessed_letters & 0b11111) next_state = WIN;
+  guessed_letters | 5'b00001;
+  if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 All_INCORRECT:

@@ -1,4 +1,4 @@
-`default_nettype none
+x`default_nettype none
 
 module user_proj_example #(
 	parameter AWIDTH=5, DWIDTH=8, BITS = 16
@@ -150,7 +150,7 @@ module controller(input logic clk, reset,
                           else next_state = CHECK_GUESS_3;
                         end
         CHECK_GUESS_3:  begin 
-                          if (input_char_eq_word_3) next_state = CORRECT_03
+			  if (input_char_eq_word_3) next_state = CORRECT_3;
                           else next_state = CHECK_GUESS_4;
                         end
         CHECK_GUESS_4:  begin 

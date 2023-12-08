@@ -1,65 +1,66 @@
 INIT_GAME: 
-  tries = 0;
+  tries = 0; => s_tries = 1'b0; en_tries = 1'b1;
+  guessed_letters = 0; => s_guessed_letters = 3'b000; en_guessed_letters = 1'b1;
   if (next) next_state = GEN_WORD;
   else next_state = INIT_GAME;
 
 GEN_WORD:
-  word = words[word_index];
+  word_index = random_index => en_word_index = 1'b1;
   next_state = GUESS;
 
 GUESS: 
-  input_char = stuff
+  input_char = stuff => en_input_char = 1'b1;
   if (next) next_state = CHECK_GUESS;
   else next_state = GUESS;
 
 CHECK_GUESS_0: 
-  if (input_char == word[0]) next_state = CORRECT_0;
+  if (input_char == word[0]) next_state = CORRECT_0; => if (input_char_eq_word_0) next_state = CORRECT_0
   else next_state = CHECK_GUESS_1;
 
 CHECK_GUESS_1: 
-  if (input_char == word[1]) next_state = CORRECT_1;
+  if (input_char == word[1]) next_state = CORRECT_1; => if (input_char_eq_word_1) next_state = CORRECT_1
   else next_state = CHECK_GUESS_2;
 
 CHECK_GUESS_2: 
-  if (input_char == word[2]) next_state = CORRECT_2;
+  if (input_char == word[2]) next_state = CORRECT_2; => if (input_char_eq_word_2) next_state = CORRECT_2
   else next_state = CHECK_GUESS_3;
 
 CHECK_GUESS_3: 
-  if (input_char == word[3]) next_state = CORRECT_3;
+  if (input_char == word[3]) next_state = CORRECT_3; => if (input_char_eq_word_3) next_state = CORRECT_3
   else next_state = CHECK_GUESS_4;
 
 CHECK_GUESS_4: 
-  if (input_char == word[4]) next_state = CORRECT_4;
+  if (input_char == word[4]) next_state = CORRECT_4; => if (input_char_eq_word_4) next_state = CORRECT_4
   else next_state = ALL_INCORRECT;
 
 CORRECT_0:
-  guessed_letters | 5'b10000;
+  guessed_letters |= 5'b10000; s_guessed_letters = 3'b001; en_guessed_letters = 1'b1;
   if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_1:
-  guessed_letters | 5'b01000;
+  guessed_letters |= 5'b01000; s_guessed_letters = 3'b010; en_guessed_letters = 1'b1;
   if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_2:
-  guessed_letters | 5'b00100;
+  guessed_letters |= 5'b00100; s_guessed_letters = 3'b011; en_guessed_letters = 1'b1;
   if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_3:
-  guessed_letters | 5'b00010;
+  guessed_letters |= 5'b00010; s_guessed_letters = 3'b100; en_guessed_letters = 1'b1;
   if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_4:
-  guessed_letters | 5'b00001;
+  guessed_letters |= 5'b00001; s_guessed_letters = 3'b101; en_guessed_letters = 1'b1;
   if (guessed_letters & 5'b11111) next_state = WIN;
   else next_state = GUESS;
 
 All_INCORRECT:
-  tries++;
-  if (tries == 7) next_state = LOSE;
+  tries++; => s_tries = 1'b1; en_tries = 1'b1;
+  if (tries == 7) next_state = LOSE; => if (tries_eq_7)
   else next_state = GUESS;
 
 WIN:

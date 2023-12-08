@@ -1,0 +1,35 @@
+INIT_GAME: 
+  tries = 0;
+  if (next) next_state = GEN_WORD;
+  else next_state = INIT_GAME;
+
+GEN_WORD:
+  word = words[word_index];
+  next_state = GUESS;
+
+GUESS: 
+  input_char = stuff
+  if (next) next_state = CHECK_GUESS;
+  else next_state = GUESS;
+
+CHECK_GUESS: 
+  if (input_char |= word) next_state = CORRECT;
+  else next_state = INCORRECT;
+
+CORRECT:
+  num_correct++;
+  if (num_correct == len(word)) next_state = WIN;
+  else next_state = GUESS;
+
+INCORRECT:
+  tries++;
+  if (tries == 7) next_state = LOSE;
+  else next_state = GUESS;
+
+WIN:
+  if (next) next_state = INIT_GAME;
+  else next_state = WIN;
+
+LOSE:
+  if (next) next_state = INIT_GAME;
+  else next_state = LOSE;

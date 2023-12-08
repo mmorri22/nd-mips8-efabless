@@ -92,20 +92,126 @@ module controller(input logic clk, reset,
                   output logic [2:0] alucontrol,
                   output logic [3:0] irwrite);
 
-  statetype       state;
-  logic           pcwrite, branch;
-  logic     [1:0] aluop;
+  statetype       state, nextstate;
+  
+  always_ff @(posedge clk)
+    if (reset) state <= FETCH1;
+    else       state <= nextstate;
+    
+  always_comb
+    begin
+      // start by setting all outputs to 0
+      s_tries = 1'b0; 
+      en_tries = 1'b0;
 
-  // control FSM
-  statelogic statelog(clk, reset, op, state);
-  outputlogic outputlog(state, memread, memwrite, alusrca,
-                        memtoreg, iord, 
-                        regwrite, regdst, pcsrc, alusrcb, irwrite, 
-                        pcwrite, branch, aluop);
+      s_guessed_letters = 3'b0;
+      en_guessed_letters = 1'b0;
 
-  // other control decoding
-  aludec  ac(aluop, funct, alucontrol);
-  assign pcen = pcwrite | (branch & zero); // program counter enable
+      en_word_index = 1'b0;
+
+      en_input_char = 1'b0;
+
+      s_win = 1'b0;
+      en_win = 1'b0;
+
+      s_lose = 1'b0;
+      en_lose = 1'b0;
+
+      case (state)
+        INIT_GAME:      begin
+                          s_tries = 1'b0;
+                          en_tries = 1'b1;
+
+                          s_guessed_letters = 3'b0;
+                          en_guessed_letters = 1'b1;
+
+                          if (next) nextstate = GEN_WORD;
+                          else nextstate = INIT_GAME;
+                        end
+        GEN_WORD:       begin
+                          en_word_index = 1'b1;
+                          nextstate = GUESS;
+                        end
+        GUESS:          begin
+                          en_input_char = 1'b1;
+                          if (next) nextstate = CHECK_GUESS_0;
+                          else nextstate = GUESS;
+                        end
+        CHECK_GUESS_0:  begin 
+                          if (input_char_eq_word_0) next_state = CORRECT_0;
+                          else next_state = CHECK_GUESS_1;
+                        end
+        CHECK_GUESS_1:  begin 
+                          if (input_char_eq_word_1) next_state = CORRECT_1;
+                          else next_state = CHECK_GUESS_2;
+                        end
+        CHECK_GUESS_2:  begin 
+                          if (input_char_eq_word_2) next_state = CORRECT_2;
+                          else next_state = CHECK_GUESS_3;
+                        end
+        CHECK_GUESS_3:  begin 
+                          if (input_char_eq_word_3) next_state = CORRECT_03
+                          else next_state = CHECK_GUESS_4;
+                        end
+        CHECK_GUESS_4:  begin 
+                          if (input_char_eq_word_4) next_state = CORRECT_4;
+                          else next_state = ALL_INCORRECT;
+                        end
+        CORRECT_0:      begin
+                          s_guessed_letters = 3'b001;
+                          en_guessed_letters = 1'b1;
+                          if (guessed_letters_is_done) next_state = WIN;
+                          else next_state = GUESS;
+                        end
+        CORRECT_1:      begin
+                          s_guessed_letters = 3'b010;
+                          en_guessed_letters = 1'b1;
+                          if (guessed_letters_is_done) next_state = WIN;
+                          else next_state = GUESS;
+                        end
+        CORRECT_2:      begin
+                          s_guessed_letters = 3'b011;
+                          en_guessed_letters = 1'b1;
+                          if (guessed_letters_is_done) next_state = WIN;
+                          else next_state = GUESS;
+                        end
+        CORRECT_3:      begin
+                          s_guessed_letters = 3'b100;
+                          en_guessed_letters = 1'b1;
+                          if (guessed_letters_is_done) next_state = WIN;
+                          else next_state = GUESS;
+                        end
+        CORRECT_4:      begin
+                          s_guessed_letters = 3'b101;
+                          en_guessed_letters = 1'b1;
+                          if (guessed_letters_is_done) next_state = WIN;
+                          else next_state = GUESS;
+                        end
+        ALL_INCORRECT:  begin
+                          s_tries = 1'b1;
+                          en_tries = 1'b1;
+                          if (tries_eq_7) next_state = LOSE;
+                          else next_state = GUESS;
+                        end
+        WIN:            begin
+                          s_win = 1'b1;
+                          en_win = 1'b1;
+                          if (next) next_state = INIT_GAME;
+                          else next_state = WIN;
+                        end
+        LOSE:           begin
+                          s_lose = 1'b1;
+                          en_lose = 1'b1;
+                          if (next) next_state = INIT_GAME;
+                          else next_state = LOSE;
+                        end
+        default: nextstate = INIT_GAME; // should never happen
+      endcase
+    end
+  
+
+
+  
 endmodule
 
 

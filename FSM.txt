@@ -40,7 +40,7 @@ CORRECT_0:
 
 CORRECT_1:
   guessed_letters |= 5'b01000; s_guessed_letters = 3'b010; en_guessed_letters = 1'b1;
-  if (guessed_letters & 5'b11111) next_state = WIN;
+  if (guessed_letters & 5'b11111) next_state = WIN; => if (guessed_letters_is_done) next_state = WIN;
   else next_state = GUESS;
 
 CORRECT_2:
@@ -64,9 +64,11 @@ All_INCORRECT:
   else next_state = GUESS;
 
 WIN:
+  win = 1 => s_win = 1'b1; en_win = 1'b1;
   if (next) next_state = INIT_GAME;
   else next_state = WIN;
 
 LOSE:
+  lose = 1 => s_lose = 1'b1; en_lose = 1'b1;
   if (next) next_state = INIT_GAME;
   else next_state = LOSE;

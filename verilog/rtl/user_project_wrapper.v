@@ -50,11 +50,12 @@ module user_project_wrapper #(
 		/* Inputs for wire and reset */
 		.wb_clk_i(wb_clk_i),
 		.wb_rst_i(wb_rst_i),
+		.wbs_sel_i(wbs_sel_i),
 		
 		// IO Pads
-		.io_in ({io_in[12:5]}),
-		.io_out({io_out[28:13]}),
-		.io_oeb({io_out[28:13]})
+		.io_in ({io_in[20:5]}),
+		.io_out({io_out[36:21]}),
+		.io_oeb({io_out[36:21]})
 
 	);
 endmodule	// user_project_wrapper

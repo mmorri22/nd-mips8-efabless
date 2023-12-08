@@ -1,6 +1,6 @@
 ###############################################################################
 # Created by write_sdc
-# Tue Dec  5 03:11:40 2023
+# Fri Dec  8 20:52:55 2023
 ###############################################################################
 current_design user_proj_example
 ###############################################################################
@@ -13,6 +13,14 @@ set_propagated_clock [get_clocks {clk}]
 set_clock_latency -source -min 4.6500 [get_clocks {clk}]
 set_clock_latency -source -max 5.5700 [get_clocks {clk}]
 set_input_delay 14.0000 -clock [get_clocks {clk}] -add_delay [get_ports {wb_rst_i}]
+set_input_delay 1.1900 -clock [get_clocks {clk}] -min -add_delay [get_ports {wbs_sel_i[0]}]
+set_input_delay 3.1700 -clock [get_clocks {clk}] -max -add_delay [get_ports {wbs_sel_i[0]}]
+set_input_delay 1.1900 -clock [get_clocks {clk}] -min -add_delay [get_ports {wbs_sel_i[1]}]
+set_input_delay 3.1700 -clock [get_clocks {clk}] -max -add_delay [get_ports {wbs_sel_i[1]}]
+set_input_delay 1.1900 -clock [get_clocks {clk}] -min -add_delay [get_ports {wbs_sel_i[2]}]
+set_input_delay 3.1700 -clock [get_clocks {clk}] -max -add_delay [get_ports {wbs_sel_i[2]}]
+set_input_delay 1.1900 -clock [get_clocks {clk}] -min -add_delay [get_ports {wbs_sel_i[3]}]
+set_input_delay 3.1700 -clock [get_clocks {clk}] -max -add_delay [get_ports {wbs_sel_i[3]}]
 ###############################################################################
 # Environment
 ###############################################################################
@@ -49,6 +57,22 @@ set_load -pin_load 0.1900 [get_ports {io_out[2]}]
 set_load -pin_load 0.1900 [get_ports {io_out[1]}]
 set_load -pin_load 0.1900 [get_ports {io_out[0]}]
 set_input_transition 0.6100 [get_ports {wb_clk_i}]
+set_input_transition -min 0.0500 [get_ports {io_in[15]}]
+set_input_transition -max 0.3800 [get_ports {io_in[15]}]
+set_input_transition -min 0.0500 [get_ports {io_in[14]}]
+set_input_transition -max 0.3800 [get_ports {io_in[14]}]
+set_input_transition -min 0.0500 [get_ports {io_in[13]}]
+set_input_transition -max 0.3800 [get_ports {io_in[13]}]
+set_input_transition -min 0.0500 [get_ports {io_in[12]}]
+set_input_transition -max 0.3800 [get_ports {io_in[12]}]
+set_input_transition -min 0.0500 [get_ports {io_in[11]}]
+set_input_transition -max 0.3800 [get_ports {io_in[11]}]
+set_input_transition -min 0.0500 [get_ports {io_in[10]}]
+set_input_transition -max 0.3800 [get_ports {io_in[10]}]
+set_input_transition -min 0.0500 [get_ports {io_in[9]}]
+set_input_transition -max 0.3800 [get_ports {io_in[9]}]
+set_input_transition -min 0.0500 [get_ports {io_in[8]}]
+set_input_transition -max 0.3800 [get_ports {io_in[8]}]
 set_input_transition -min 0.0500 [get_ports {io_in[7]}]
 set_input_transition -max 0.3800 [get_ports {io_in[7]}]
 set_input_transition -min 0.0500 [get_ports {io_in[6]}]
@@ -65,6 +89,14 @@ set_input_transition -min 0.0500 [get_ports {io_in[1]}]
 set_input_transition -max 0.3800 [get_ports {io_in[1]}]
 set_input_transition -min 0.0500 [get_ports {io_in[0]}]
 set_input_transition -max 0.3800 [get_ports {io_in[0]}]
+set_input_transition -min 0.0900 [get_ports {wbs_sel_i[3]}]
+set_input_transition -max 0.1800 [get_ports {wbs_sel_i[3]}]
+set_input_transition -min 0.0900 [get_ports {wbs_sel_i[2]}]
+set_input_transition -max 0.1800 [get_ports {wbs_sel_i[2]}]
+set_input_transition -min 0.0900 [get_ports {wbs_sel_i[1]}]
+set_input_transition -max 0.1800 [get_ports {wbs_sel_i[1]}]
+set_input_transition -min 0.0900 [get_ports {wbs_sel_i[0]}]
+set_input_transition -max 0.1800 [get_ports {wbs_sel_i[0]}]
 set_timing_derate -early 0.9500
 set_timing_derate -late 1.0500
 ###############################################################################

@@ -12,9 +12,10 @@ module user_proj_example #(
     // Include the Caravel Ports to connect the inputs and outputs
     input wb_clk_i,
     input wb_rst_i,
+	input [3:0] wbs_sel_i,
 
     // IOs
-    input  [DWIDTH-1:0] io_in,
+    input  [BITS-1:0] io_in,
     output [BITS-1:0] io_out,
 	output [BITS-1:0] io_oeb,
 );
@@ -25,25 +26,75 @@ module user_proj_example #(
 	
 	/* Set io_oeb to 0 to ensure all outputs are active */
 	assign io_oeb = 1'b0;
-
-	/* Output signals */
-	wire [DWIDTH-1:0] adr_out;
-	wire [DWIDTH-1:0] writedata_out;
 	
+	/* Set io_in to the io_in_wire */
+	wire [BITS-1:0] io_in_wire = io_in;
+	assign io_in_wire[BITS-1:DWIDTH+1] = 7'b0;
+	
+	/****************************************/
+	/*************	Projects ****************/
+	
+	/* Project 0 Output signals - Prof. Morrison */
+	wire [BITS-1:0] proj_output0_out;	// Prof. Morridon
+	
+	/* Project 1 Output Signals - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young */
+	wire [BITS-1:0] proj_output1_out;
+	assign proj_output1_out[BITS-1:3] = 13'b0;	// Only 3 output bits so set the rest to 0
+	
+	/* Wires connecting from Projects to the MUX */
+	wire [BITS-1:0] mux_outputs;
+	
+	/* input0 - Prof. Morrison - MIPS 8-bit Multicycle */
 	mips the_mips(
 		.clk(clk),
 		.reset(rst),
-		.memdata(io_in[DWIDTH-1:0]),
-		.adr(adr_out),
-		.writedata(writedata_out)
+		.memdata(io_in_wire[DWIDTH-1:0]),
+		.adr(proj_output0_out[BITS-1:DWIDTH]),
+		.writedata(proj_output0_out[DWIDTH-1:0])
+	);
+	
+	/* input1 - Aidan XXXX - */
+	parity proj1(
+		.clk(clk),
+		.start(io_in_wire[DWIDTH]),
+		.data_in(io_in_wire[DWIDTH-1:0]),
+		.even_parity(proj_output1_out[2]),
+		.odd_parity(proj_output1_out[1]),
+		.busy(proj_output1_out[0])
+	);
+	
+
+	/* The 256-16 MUX Itself */
+	mux256_to_16 the_output_mux(
+	
+		.input0(proj_output0_out),	// Prof. Morrison Project Connection
+		.input1(proj_output1_out),	// Aidan Oblepias et al.
+		.input2(16'b0),
+		.input3(16'b0),
+		.input4(16'b0),
+		.input5(16'b0),
+		.input6(16'b0),
+		.input7(16'b0),
+		.input8(16'b0),
+		.input9(16'b0),
+		.input10(16'b0),
+		.input11(16'b0),
+		.input12(16'b0),
+		.input13(16'b0),
+		.input14(16'b0),
+		.input15(16'b0),
+		.sel(wbs_sel_i),
+		.outputs(mux_outputs)
+		
 	);
 
 	/* Map the wires to the io_out */
-	assign io_out[BITS-1:DWIDTH] = adr_out;
-	assign io_out[DWIDTH-1:0] = writedata_out;
+	assign io_out = mux_outputs;
 
 endmodule
 
+/********************************************************/
+/********************* Project 0 ************************/
 
 // states and instructions
 
@@ -472,6 +523,488 @@ module adder #(parameter WIDTH = 8)
 
   assign y = a + b + cin;
 endmodule
+
+/*******************************************************/
+/************** Project 1 ******************************/
+/*******************************************************/
+module parity_controller (
+    
+    input       current_bit_equals_8,
+    input       shift_reg_zero_equals_0,
+    input       parity_equals_0,
+
+    input       start,
+    input       clk,
+
+    output reg  data_in_en,
+    output reg  data_in_s,
+
+    output reg  one_count_en,
+    output reg  one_count_s,
+
+    output reg  zero_count_en,
+    output reg  zero_count_s,
+
+    output reg  current_bit_en,
+    output reg  current_bit_s,
+
+    output reg  shift_reg_en,
+    output reg  shift_reg_s,
+
+    output reg  even_parity_en,
+    output reg  even_parity_s,
+
+    output reg  odd_parity_en,
+    output reg  odd_parity_s,
+
+    output reg  busy_en,
+	output reg  busy_s,
+
+    output reg parity_en,
+    output reg parity_s
+	);
+
+    //states are here
+    parameter WAIT          = 5'd0;
+	parameter INIT          = 5'd1;
+	parameter ONE_STATE     = 5'd2;
+	parameter ZERO_STATE    = 5'd3;
+	parameter UPDATE_BIT    = 5'd4;
+	parameter CALCULATE     = 5'd5;
+    parameter ODD_STATE     = 5'd6;
+	parameter EVEN_STATE    = 5'd7;
+    parameter FINISH        = 5'd8;
+    //parameter INIT2         = 5'd9;
+	
+    //set to idle wait state
+	reg [3:0] state = WAIT;
+	reg [3:0] next_state;
+	
+    //always check for next state.
+	always @(posedge clk)
+		state <= next_state;
+		
+	always @(*) begin
+
+        data_in_en = 0;
+        data_in_s = 0;
+
+        busy_en = 0;
+        busy_s = 0;
+
+        current_bit_en = 0;
+        current_bit_s = 0;
+
+        data_in_en = 0;
+        data_in_s = 0;
+
+        one_count_en = 0;
+        one_count_s = 0;
+
+        zero_count_en = 0;
+        zero_count_s = 0;
+
+        current_bit_en = 0;
+        current_bit_s = 0;
+
+        shift_reg_en = 0;
+        shift_reg_s = 0;
+
+        even_parity_en = 0;
+        even_parity_s = 0;
+
+        odd_parity_en = 0;
+        odd_parity_s = 0;
+
+        parity_en = 0;
+        parity_s = 0;
+		
+		case (state)
+			WAIT:	begin
+				busy_en = 1;
+				if (start)
+					next_state = INIT;
+				else
+					next_state = WAIT;
+			end
+			
+			INIT:	begin
+                //busy <= 1
+                busy_en = 1;
+                busy_s = 1;
+
+                data_in_en = 1;
+                one_count_en = 1;
+                zero_count_en = 1;
+                current_bit_en = 1;
+                shift_reg_en = 1;
+
+                odd_parity_en = 1;
+                even_parity_en = 1;
+                parity_en = 1;
+
+                //next_state = INIT2;
+                if(shift_reg_zero_equals_0)
+                //used to be onestate
+                    next_state = ZERO_STATE;
+                else
+                    next_state = ONE_STATE;
+
+			end
+
+            //tried to see if a new cycle would fix it
+            /*INIT2:  begin
+                if(shift_reg_zero_equals_0)
+                //used to be onestate
+                    next_state = ZERO_STATE;
+                else
+                    next_state = ONE_STATE;
+            end*/
+
+            ONE_STATE: begin
+                one_count_en = 1;
+                one_count_s = 1;
+                if(current_bit_equals_8)
+                    next_state = CALCULATE;
+                else
+                    next_state = UPDATE_BIT;
+            end
+
+            ZERO_STATE: begin
+                zero_count_en = 1;
+                zero_count_s = 1;
+                if(current_bit_equals_8)
+                    next_state = CALCULATE;
+                else
+                    next_state = UPDATE_BIT;
+            end
+
+            UPDATE_BIT: begin
+                current_bit_en = 1;
+                current_bit_s = 1;
+                shift_reg_en = 1;
+                shift_reg_s = 1;
+                if(shift_reg_zero_equals_0)
+                //used to be onestte
+                    next_state = ZERO_STATE;
+                else
+                    next_state = ONE_STATE;
+            end
+
+            CALCULATE: begin
+                //one_count_en = 1;
+                //one_count_s = 1;
+
+                parity_en = 1;
+                parity_s = 1;
+
+                if(parity_equals_0)
+                    next_state = EVEN_STATE;
+                else
+                    next_state = ODD_STATE;
+            end
+            //used to be odd
+            ODD_STATE: begin
+                odd_parity_en = 1;
+                odd_parity_s = 1;
+                next_state = FINISH;
+            end
+
+            EVEN_STATE: begin
+                even_parity_en = 1;
+                even_parity_s = 1;
+                next_state = FINISH;
+            end
+			
+			FINISH: begin
+				busy_en    = 1;
+				next_state = WAIT;
+			end
+			
+			default:
+				next_state = WAIT;	
+		endcase
+	end
+endmodule
+
+
+module parity_datapath (
+	input clk,
+
+    input [7:0] data_in,
+    //include start_en?
+
+	input data_in_en,
+    input data_in_s,
+
+    input shift_reg_en,
+    input shift_reg_s,
+
+    input one_count_en,
+    input one_count_s,
+
+    input zero_count_en,
+    input zero_count_s,
+
+    input current_bit_en,
+    input current_bit_s,
+
+    input parity_en,
+    input parity_s,
+
+    input busy_en,
+    input busy_s,
+
+    input odd_parity_en,
+    input odd_parity_s,
+
+    input even_parity_en,
+    input even_parity_s,
+
+    output      current_bit_equals_8,
+    output      parity_equals_0,
+    output      shift_reg_zero_equals_0,
+
+	output reg even_parity,
+    output reg odd_parity,
+	output reg busy
+    
+   );
+   
+	initial busy = 0;
+	
+
+    reg [4:0] one_count = 0;
+    reg [4:0] zero_count = 0;
+    reg [4:0] current_bit = 1;
+    reg [7:0] shift_reg = 0;
+    reg [4:0] parity = -1;
+	
+    
+    //initial shift_reg = data_in;
+    always @ (posedge clk)
+		if (shift_reg_en)
+			if (~shift_reg_s)
+				shift_reg <= data_in;
+                //Try hard coding odd parity value?
+                //shift_reg <= 8'b10010001;
+			else
+				shift_reg <= shift_reg >> 1;
+    
+    //can stay same for our project too
+	always @ (posedge clk)
+		if (busy_en)
+			if (~busy_s)
+				busy <= 0;
+			else
+				busy <= 1;
+
+    always @(posedge clk)
+        if (one_count_en)
+            if(~one_count_s)
+                one_count <= 0;
+            else
+                one_count <= one_count + 1;
+
+    //zero_count++
+    always @(posedge clk)
+        if (zero_count_en)
+            if(~zero_count_s)
+                zero_count <= 0;
+            else
+                zero_count <= zero_count + 1;
+
+    //current_bit++
+    always @(posedge clk)
+        if (current_bit_en)
+            if(~current_bit_s)
+                current_bit <= 1;
+            else
+                current_bit <= current_bit + 1;
+
+    always @(posedge clk)
+        if (parity_en)
+            if(~parity_s)
+                parity <= 0;
+            else
+                parity <= one_count % 2;
+
+    always @(posedge clk)
+        if (odd_parity_en)
+            if(~odd_parity_s)
+                odd_parity <= 0;
+            else
+                odd_parity <= 1;
+
+    always @(posedge clk)
+        if (even_parity_en)
+            if(~even_parity_s)
+                even_parity <= 0;
+            else
+                even_parity <= 1;
+
+
+    assign current_bit_equals_8 = (current_bit == 8);
+    assign parity_equals_0 = (parity == 0);
+    assign shift_reg_zero_equals_0 = (shift_reg[0] == 0);
+endmodule
+
+
+module parity (
+	
+    input   clk,
+    input   start,
+    input [7:0] data_in,
+    output even_parity,
+    output odd_parity,
+    output busy
+);
+	
+
+    wire busy_en;
+    wire busy_s;
+
+    wire  data_in_en;
+    wire  data_in_s;
+
+    wire  one_count_en;
+    wire  one_count_s;
+
+    wire  zero_count_en;
+    wire  zero_count_s;
+
+    wire  current_bit_en;
+    wire  current_bit_s;
+
+    wire  shift_reg_en;
+    wire  shift_reg_s;
+
+    wire  even_parity_en;
+    wire  even_parity_s;
+
+    wire  odd_parity_en;
+    wire  odd_parity_s;
+
+    wire parity_en;
+    wire parity_s;
+	
+	parity_controller controller (
+        .clk(clk),
+        .start(start),
+        .busy_en(busy_en),
+        .busy_s(busy_s),
+
+        .data_in_en(data_in_en),
+        .data_in_s(data_in_s),
+
+        .one_count_en(one_count_en),
+        .one_count_s(one_count_s),
+
+        .zero_count_en(zero_count_en),
+        .zero_count_s(zero_count_s),
+
+        .current_bit_en(current_bit_en),
+        .current_bit_s(current_bit_s),
+
+        .shift_reg_en(shift_reg_en),
+        .shift_reg_s(shift_reg_s),
+
+        .even_parity_en(even_parity_en),
+        .even_parity_s(even_parity_s),
+
+        .odd_parity_en(odd_parity_en),
+        .odd_parity_s(odd_parity_s),
+
+        .parity_en(parity_en),
+        .parity_s(parity_s),
+
+        .current_bit_equals_8(current_bit_equals_8),
+        .parity_equals_0(parity_equals_0),
+        .shift_reg_zero_equals_0(shift_reg_zero_equals_0)
+	);
+	
+	parity_datapath datapath (
+
+        .clk(clk),
+        //.start(start),
+        
+        .busy(busy),
+        .even_parity(even_parity),
+        .odd_parity(odd_parity),
+        .data_in(data_in),
+
+        .busy_en(busy_en),
+        .busy_s(busy_s),
+
+        .data_in_en(data_in_en),
+        .data_in_s(data_in_s),
+
+        .one_count_en(one_count_en),
+        .one_count_s(one_count_s),
+
+        .zero_count_en(zero_count_en),
+        .zero_count_s(zero_count_s),
+
+        .current_bit_en(current_bit_en),
+        .current_bit_s(current_bit_s),
+
+        .shift_reg_en(shift_reg_en),
+        .shift_reg_s(shift_reg_s),
+
+        .even_parity_en(even_parity_en),
+        .even_parity_s(even_parity_s),
+
+        .odd_parity_en(odd_parity_en),
+        .odd_parity_s(odd_parity_s),
+
+        .parity_en(parity_en),
+        .parity_s(parity_s),
+
+        .current_bit_equals_8(current_bit_equals_8),
+        .parity_equals_0(parity_equals_0),
+        .shift_reg_zero_equals_0(shift_reg_zero_equals_0)
+	);
+endmodule
+
+/******************************************************/
+/************* Connection MUX *************************/
+/*** Connect all 16 projects to the 16-bit output ****/
+/******************************************************/
+module mux256_to_16
+#(
+	parameter INPUTS = 16
+)
+(
+	input  logic [INPUTS-1:0] input0, input1, input2, input3, input4, input5, input6, 
+	input  logic [INPUTS-1:0] input7, input8, input9, input10, input11, input12, 
+	input  logic [INPUTS-1:0] input13, input14, input15,
+	input  logic [3:0]       sel, 
+	output  logic [INPUTS-1:0] outputs
+
+);
+
+  always_comb
+    case (sel)
+      4'b0000: outputs = input0;
+      4'b0001: outputs = input1;
+      4'b0010: outputs = input2;
+      4'b0011: outputs = input3;
+      4'b0100: outputs = input4;
+      4'b0101: outputs = input5;
+      4'b0110: outputs = input6;
+      4'b0111: outputs = input7;
+      4'b1000: outputs = input8;
+      4'b1001: outputs = input9;
+      4'b1010: outputs = input10;
+      4'b1011: outputs = input11;
+      4'b1100: outputs = input12;
+      4'b1101: outputs = input13;
+      4'b1110: outputs = input14;
+      4'b1111: outputs = input15;
+    endcase
+	
+endmodule
+
 
 /* End EFabless Harness project with `default_nettype wire */
 `default_nettype wire

@@ -1,4 +1,4 @@
-x`default_nettype none
+`default_nettype none
 
 module user_proj_example #(
 	parameter AWIDTH=5, DWIDTH=8, BITS = 16

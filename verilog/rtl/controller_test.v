@@ -20,7 +20,6 @@ module controller_test;
   
 
 
-  
   controller controller_inst 
 
   (
@@ -41,6 +40,30 @@ module controller_test;
     .alucontrol (alucontrol), 
     .irwrite (irwrite), 
     
+  ); 
+
+  task expect; 
+    input [4:0] exp_out; 
+    if ({memread, memwrite, alusrca, memtoreg, iord, pcen, regwrite, regdst, pcsrc, alusrcb, alucontrol, irwrite} !== exp_out) begin
+      $display("\nTEST FAILED");
+      $display("time\top funct zero memtoreg iord pcen regwrite regdst pcsrc alusrcb alucontrol irwrite");
+      $display("====\t====== ===== ==== === == ===== ====== ==== ===== ====== ===== ==");
+      $display("%0d\t%d      %d     %b    %b   %b  %b     %b      %b    %b     %b      %b     %b",
+               $time, op, funct, memtoreg, iord, pcen, regwrite, regdst, pcsrc, alusrcb, alucontrol, irwrite, 
+              );
+      $display("WANT\t                  %b   %b  %b     %b      %b    %b     %b      %b     %b",
+               exp_out[4],exp_out[3],exp_out[2],exp_out[1],exp_out[0]);
+      $finish;
+    end
+  endtask
+  
+  
+  initial begin 
+
+    
+
+
+  
     
 
 

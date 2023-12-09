@@ -11,25 +11,25 @@ This project contains the 16 group projects for the CSE 30342 Digital Integrated
  *****************************************/
 
 Here is the correlation between the wbs_sel_i signals and the student projects:
-
-wbs_sel_i			Location				Authors						
-[3] [2] [1] [0]
- 0   0   0   0      verilog/rtl/proj0.v		Professor Matthew Morrison 
- 0   0   0   1		verilog/rtl/proj1.v		Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young
- 0   0   1   0 		verilog/rtl/proj2.v		Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn
- 0   0   1   1 		verilog/rtl/proj3.v
- 0   1   0   0 		verilog/rtl/proj4.v
- 0   1   0   1 		verilog/rtl/proj5.v
- 0   1   1   0 		verilog/rtl/proj6.v
- 0   1   1   1 		verilog/rtl/proj7.v
- 1   0   0   0 		verilog/rtl/proj8.v
- 1   0   0   1 		verilog/rtl/proj9.v
- 1   0   1   0 		verilog/rtl/proj10.v
- 1   0   1   1 		verilog/rtl/proj11.v
- 1   1   0   0 		verilog/rtl/proj12.v
- 1   1   0   1 		verilog/rtl/proj13.v
- 1   1   1   0 		verilog/rtl/proj14.v
- 1   1   1   1 		verilog/rtl/proj15.v
+					
+|[3]|[2]|[1]|[0]|Location|Authors|
+|---|---|---|---|---|---|
+|0|0|0|0|verilog/rtl/proj0.v|Professor Matthew Morrison 
+|0|0|0|1|verilog/rtl/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young
+|0|0|1|0|verilog/rtl/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn
+|0|0|1|1|verilog/rtl/proj3.v| |
+|0|1|0|0|verilog/rtl/proj4.v| |
+|0|1|0|1|verilog/rtl/proj5.v| |
+|0|1|1|0|verilog/rtl/proj6.v| |
+|0|1|1|1|verilog/rtl/proj7.v| |
+|1|0|0|0|verilog/rtl/proj8.v| |
+|1|0|0|1|verilog/rtl/proj9.v| |
+|1|0|1|0|verilog/rtl/proj10.v| |
+|1|0|1|1|verilog/rtl/proj11.v| |
+|1|1|0|0|verilog/rtl/proj12.v| |
+|1|1|0|1|verilog/rtl/proj13.v| |
+|1|1|1|0|verilog/rtl/proj14.v| |
+|1|1|1|1|verilog/rtl/proj15.v| |
  
 /*****************************************
  * Project 0 - MIPS Demo 
@@ -49,27 +49,27 @@ The tutorials for setting up this flow (with some limitations for introductory C
 2) Running through the Project, including how to map the Verilog to user_proj_example.v, and how to map the user_proj_example module to the user_project_wrapper. Finally, the student learns how to push the project to the EFabless GitHub repository, and how to perform MPW and Tapeout Checks - https://github.com/mmorri22/cse30342/blob/main/Resources/Final%20Project%20-%20Implementation.ipynb
 
 
-/*****************************************
- * Project 1 - Parity Checker 
- * Author(s): Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young
- *
- Aidan Oblepias <aoblepia@nd.edu>
- Allison Gentry <agentry2@nd.edu>
- Garrett Young <gyoung7@nd.edu>,
- Leo Herman <lherman@nd.edu>,
- *****************************************/
+/*****************************************<br>
+ * Project 1 - Parity Checker <br>
+ * Author(s): Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young<br>
+ *<br>
+ Aidan Oblepias <aoblepia@nd.edu><br>
+ Allison Gentry <agentry2@nd.edu><br>
+ Garrett Young <gyoung7@nd.edu>,<br>
+ Leo Herman <lherman@nd.edu>,<br>
+ *****************************************/<br>
  
+ <br>
  
- 
- /*****************************************
- * Project 2 - Cool Ranch 
- * Author(s): 
- *
-	Varun Taneja | vtaneja@nd.edu
-	Brendan McGinn | bmcginn2@nd.edu
-	Sean Froning | sfroning@nd.edu
-	Antonio Karam | akaram@nd.edu
- *****************************************/
+ /*****************************************<br>
+ * Project 2 - Cool Ranch <br>
+ * Author(s): <br>
+ *<br>
+	Varun Taneja vtaneja@nd.edu<br>
+	Brendan McGinn bmcginn2@nd.edu<br>
+	Sean Froning sfroning@nd.edu<br>
+	Antonio Karam akaram@nd.edu<br>
+ *****************************************/<br>
 
 Our final project is an implementant of a Linear Shift Feedback Register (LSFR) in verilog.
 

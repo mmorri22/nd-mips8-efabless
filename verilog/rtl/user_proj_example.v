@@ -40,7 +40,7 @@ module user_proj_example #(
 	
 	/* Project 0 Output signals - Prof. Morrison */
 	wire [BITS-1:0] proj_output0_out;	// Prof. Morrison - MIPS 8-bit 
-										// All 16 outputs 
+										// All 16 outputs, so no need for setting the bits to 0
 	
 	/* Project 1 Output Signals - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young */
 	wire [BITS-1:0] proj_output1_out;
@@ -86,9 +86,9 @@ module user_proj_example #(
 	/* The 256-16 MUX Itself */
 	mux256_to_16 the_output_mux(
 	
-		.input0(proj_output0_out),	// Prof. Morrison Project Connection
-		.input1(proj_output1_out),	// Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young.
-		.input2(proj_output2_out),	// Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinnet al.
+		.input0(proj_output0_out),	// Proj0 - Prof. Morrison Project Connection
+		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young.
+		.input2(proj_output2_out),	// Proj2 - Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinn.
 		.input3(16'b0),
 		.input4(16'b0),
 		.input5(16'b0),

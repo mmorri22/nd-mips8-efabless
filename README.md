@@ -18,8 +18,8 @@ Here is the correlation between the wbs_sel_i signals and the student projects:
 |0|0|0|1|verilog/rtl/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
 |0|0|1|0|verilog/rtl/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
 |0|0|1|1|verilog/rtl/proj3.v|David Simonetti, Thomas Mercurio, and Brooke Mackey|
-|0|1|0|0|verilog/rtl/proj4.v| |
-|0|1|0|1|verilog/rtl/proj5.v| |
+|0|1|0|0|verilog/rtl/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
+|0|1|0|1|verilog/rtl/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
 |0|1|1|0|verilog/rtl/proj6.v| |
 |0|1|1|1|verilog/rtl/proj7.v| |
 |1|0|0|0|verilog/rtl/proj8.v| |
@@ -169,3 +169,28 @@ State 6: UPDATE_E
 State 7: UPDATE_N
  
     - The update_n flag is set to 1, which signals to the datapath to store the input in the n variable, and the FSM transitions to WAITING.
+
+
+ /*****************************************<br>
+ * Project 4 - Regular Expression PhoneNumber Checker <br>
+ * Author(s): <br>
+ *<br>
+ 
+ Evan Day <eday3@nd.edu><br>
+ Sofia Nelson <snelso24@nd.edu> <br>
+ James Lindell <jlindel2@nd.edu><br> 
+ Eamon Tracey <etracey@nd.edu><br>
+ *****************************************/<br>
+ 
+ 
+ 
+/*****************************************<br>
+ * Project 5 - Encryption Co Processor <br>
+ * Author(s): <br>
+ *<br>
+ 
+ Noor Achkar <nachkar@nd.edu><br>
+ Marc Edde <medde@nd.edu> <br>
+ David Chirumbole <dchirumb@nd.edu><br> 
+ *****************************************/<br>
+ 

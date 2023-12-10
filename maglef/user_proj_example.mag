@@ -1,25 +1,27 @@
 magic
 tech gf180mcuD
 magscale 1 5
-timestamp 1702224980
+timestamp 1702235970
 << obsm1 >>
 rect 672 1538 279328 174078
 << metal2 >>
-rect 23408 0 23464 400
-rect 70000 0 70056 400
-rect 116592 0 116648 400
-rect 163184 0 163240 400
-rect 209776 0 209832 400
-rect 256368 0 256424 400
+rect 19936 0 19992 400
+rect 59920 0 59976 400
+rect 99904 0 99960 400
+rect 139888 0 139944 400
+rect 179872 0 179928 400
+rect 219856 0 219912 400
+rect 259840 0 259896 400
 << obsm2 >>
 rect 854 430 279146 174067
-rect 854 400 23378 430
-rect 23494 400 69970 430
-rect 70086 400 116562 430
-rect 116678 400 163154 430
-rect 163270 400 209746 430
-rect 209862 400 256338 430
-rect 256454 400 279146 430
+rect 854 400 19906 430
+rect 20022 400 59890 430
+rect 60006 400 99874 430
+rect 99990 400 139858 430
+rect 139974 400 179842 430
+rect 179958 400 219826 430
+rect 219942 400 259810 430
+rect 259926 400 279146 430
 << metal3 >>
 rect 0 171696 400 171752
 rect 279600 171696 280000 171752
@@ -158,14 +160,14 @@ rect 263344 1538 263504 174078
 rect 271024 1538 271184 174078
 rect 278704 1538 278864 174078
 << obsm4 >>
-rect 93870 54049 94354 88527
-rect 94574 54049 102034 88527
-rect 102254 54049 109714 88527
-rect 109934 54049 117394 88527
-rect 117614 54049 125074 88527
-rect 125294 54049 132754 88527
-rect 132974 54049 140434 88527
-rect 140654 54049 140714 88527
+rect 109606 53321 109714 87855
+rect 109934 53321 117394 87855
+rect 117614 53321 125074 87855
+rect 125294 53321 132754 87855
+rect 132974 53321 140434 87855
+rect 140654 53321 148114 87855
+rect 148334 53321 155794 87855
+rect 156014 53321 156170 87855
 << labels >>
 rlabel metal3 s 279600 4256 280000 4312 6 io_in[0]
 port 1 nsew signal input
@@ -337,24 +339,26 @@ rlabel metal4 s 255664 1538 255824 174078 6 vss
 port 50 nsew ground bidirectional
 rlabel metal4 s 271024 1538 271184 174078 6 vss
 port 50 nsew ground bidirectional
-rlabel metal2 s 23408 0 23464 400 6 wb_clk_i
+rlabel metal2 s 19936 0 19992 400 6 wb_clk_i
 port 51 nsew signal input
-rlabel metal2 s 70000 0 70056 400 6 wb_rst_i
+rlabel metal2 s 59920 0 59976 400 6 wb_rst_i
 port 52 nsew signal input
-rlabel metal2 s 116592 0 116648 400 6 wbs_sel_i[0]
+rlabel metal2 s 139888 0 139944 400 6 wbs_sel_i[0]
 port 53 nsew signal input
-rlabel metal2 s 163184 0 163240 400 6 wbs_sel_i[1]
+rlabel metal2 s 179872 0 179928 400 6 wbs_sel_i[1]
 port 54 nsew signal input
-rlabel metal2 s 209776 0 209832 400 6 wbs_sel_i[2]
+rlabel metal2 s 219856 0 219912 400 6 wbs_sel_i[2]
 port 55 nsew signal input
-rlabel metal2 s 256368 0 256424 400 6 wbs_sel_i[3]
+rlabel metal2 s 259840 0 259896 400 6 wbs_sel_i[3]
 port 56 nsew signal input
+rlabel metal2 s 99904 0 99960 400 6 wbs_we_i
+port 57 nsew signal input
 << properties >>
 string FIXED_BBOX 0 0 280000 176000
 string LEFclass BLOCK
 string LEFview TRUE
-string GDS_END 20424626
-string GDS_FILE /mnt/c/Users/mmorri22/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_10_11_11/results/signoff/user_proj_example.magic.gds
-string GDS_START 474036
+string GDS_END 20549872
+string GDS_FILE /mnt/c/Users/mmorri22/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_10_14_14/results/signoff/user_proj_example.magic.gds
+string GDS_START 435188
 << end >>
 

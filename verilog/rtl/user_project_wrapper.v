@@ -47,9 +47,10 @@ module user_project_wrapper #(
 			.vss(vss),	// User area 1 digital ground
 		`endif
 		
-		/* Inputs for wire and reset */
+		/* Inputs for wire and reset and we_i for a mode */
 		.wb_clk_i(wb_clk_i),
 		.wb_rst_i(wb_rst_i),
+		.wbs_we_i(wbs_we_i),
 		.wbs_sel_i(wbs_sel_i),
 		
 		// IO Pads

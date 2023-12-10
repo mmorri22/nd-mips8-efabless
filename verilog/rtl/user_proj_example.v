@@ -5,6 +5,8 @@
 `include "projects/proj1_aoblepia.v"
 `include "projects/proj2_akaram.v"
 `include "projects/proj3_dsimone2.v"
+`include "projects/proj4_evstar3.v"
+`include "projects/proj5_dchirumb.v"
 
 module user_proj_example #(
 	parameter DWIDTH=8, BITS = 16
@@ -18,17 +20,19 @@ module user_proj_example #(
     // Include the Caravel Ports for clk, reset, and mux select signals
     input wb_clk_i,
     input wb_rst_i,
+	input wbs_we_i,				// For Proj5 mode
 	input [3:0] wbs_sel_i,
 
     // IOs
     input  [BITS-1:0] io_in,	// 16-bits of input signals
     output [BITS-1:0] io_out,	// 16-bits of output signals
-	output [BITS-1:0] io_oeb,	// 16-bits OEB to set active output signals
+	output [BITS-1:0] io_oeb	// 16-bits OEB to set active output signals
 );
 
 	/* For mapping the wb_clk_i and wb_rst_i to our clk and rst */
     wire clk = wb_clk_i;
     wire rst = !wb_rst_i;
+	wire mode = wbs_we_i;
 	
 	/* Set io_oeb to 0 to ensure all outputs are active */
 	assign io_oeb = 1'b0;
@@ -80,14 +84,36 @@ module user_proj_example #(
 	
 	/* Project 3 Output Signals - David Simonetti, Thomas Mercurio, and Brooke Mackey */
 	wire [BITS-1:0] proj_output3_out;
-	// All 16 outputs, so no need for setting the bits to 0
-										
+	// All 16 outputs, so no need for setting the bits to 0							
 	rsa_3 proj3(
 	 
 		.clk(clk),
 		.io_in(io_in[BITS-1:0]),
 		.io_out(proj_output3_out)
 
+	);
+	
+	/* Project 4 Output Signals - Evan Day, Sofia Nelson, James Lindell, Eamon Tracey */
+	wire [BITS-1:0] proj_output4_out;
+	assign proj_output4_out[BITS-1:1] = 15'b0; // 1 output bits so set the rest (15) to 0	
+	
+	wrapper_4 gamer_tag(
+        .char_in(io_in_wire[7:0]),
+        .reset(io_in_wire[8]),
+        .process(io_in_wire[9]),
+        .match(proj_output4_out[0])
+	);
+	
+	/* Project 5 - David Chirumbole, Noor Ackhar, and Marc Edde */
+	wire [BITS-1:0] proj_output5_out;
+	// All 16 outputs, so no need for setting the bits to 0		
+	
+	encryption_co_processor proj5(
+		.data_in(io_in_wire),
+		.data_out(proj_output5_out),
+		.clk(clk),
+		.reset(rst),
+		.mode(mode)
 	);
 
 	/* The 256-16 MUX Itself */
@@ -100,8 +126,8 @@ module user_proj_example #(
 		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young.
 		.input2(proj_output2_out),	// Proj2 - Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinn.
 		.input3(proj_output3_out),	// Proj3 - David Simonetti, Thomas Mercurio, and Brooke Mackey
-		.input4(16'b0),
-		.input5(16'b0),
+		.input4(proj_output4_out),	// Proj4 - Evan Day, Sofia Nelson, James Lindell, Eamon Tracey
+		.input5(16'b0),	// Proj5 - David Chirumbole, Noor Ackhar, and Marc Edde
 		.input6(16'b0),
 		.input7(16'b0),
 		.input8(16'b0),

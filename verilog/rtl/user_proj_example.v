@@ -4,9 +4,10 @@
 `include "projects/proj0_morrison.v"
 `include "projects/proj1_aoblepia.v"
 `include "projects/proj2_akaram.v"
+`include "projects/proj3_dsimone2.v"
 
 module user_proj_example #(
-	parameter AWIDTH=5, DWIDTH=8, BITS = 16
+	parameter DWIDTH=8, BITS = 16
 )(
 
 	`ifdef USE_POWER_PINS
@@ -14,15 +15,15 @@ module user_proj_example #(
 		inout vss,	// User area 1 digital ground
 	`endif
 	
-    // Include the Caravel Ports to connect the inputs and outputs
+    // Include the Caravel Ports for clk, reset, and mux select signals
     input wb_clk_i,
     input wb_rst_i,
 	input [3:0] wbs_sel_i,
 
     // IOs
-    input  [BITS-1:0] io_in,
-    output [BITS-1:0] io_out,
-	output [BITS-1:0] io_oeb,
+    input  [BITS-1:0] io_in,	// 16-bits of input signals
+    output [BITS-1:0] io_out,	// 16-bits of output signals
+	output [BITS-1:0] io_oeb,	// 16-bits OEB to set active output signals
 );
 
 	/* For mapping the wb_clk_i and wb_rst_i to our clk and rst */
@@ -36,24 +37,13 @@ module user_proj_example #(
 	wire [BITS-1:0] io_in_wire = io_in;
 	
 	/****************************************/
-	/*************	Projects ****************/
+	/************** Projects ****************/
+	/****************************************/
 	
-	/* Project 0 Output signals - Prof. Morrison */
-	wire [BITS-1:0] proj_output0_out;	// Prof. Morrison - MIPS 8-bit 
-										// All 16 outputs, so no need for setting the bits to 0
-	
-	/* Project 1 Output Signals - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young */
-	wire [BITS-1:0] proj_output1_out;
-	assign proj_output1_out[BITS-1:3] = 13'b0;	// 3 output bits so set the rest (13) to 0
-	
-	/* Project 2 Output Signals - Antonio Karam et al (Add names here) */
-	wire [BITS-1:0] proj_output2_out;
-	assign proj_output2_out[BITS-1:DWIDTH+1] = 7'b0; // 9 output bits so set the rest (7) to 0
-	
-	/* Wires connecting from Projects to the MUX */
-	wire [BITS-1:0] mux_outputs;
-	
-	/* input0 - Prof. Morrison - MIPS 8-bit Multicycle */
+	/* Project 0 Output signals - Prof. Morrison - MIPS 8-bit Multicycle */
+	wire [BITS-1:0] proj_output0_out;	
+	// All 16 outputs, so no need for setting the bits to 0
+
 	mips the_mips(
 		.clk(clk),
 		.reset(rst),
@@ -62,7 +52,10 @@ module user_proj_example #(
 		.writedata(proj_output0_out[DWIDTH-1:0])
 	);
 	
-	/* proj1 - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young - */
+	/* Project 1 Output Signals - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young */
+	wire [BITS-1:0] proj_output1_out;
+	assign proj_output1_out[BITS-1:3] = 13'b0;	// 3 output bits so set the rest (13) to 0
+
 	parity_1 proj1(
 		.clk(clk),
 		.start(io_in_wire[DWIDTH]),
@@ -72,24 +65,41 @@ module user_proj_example #(
 		.busy(proj_output1_out[0])
 	);
 	
-	/* proj2 - Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn */
+	/* Project 2 Output Signals - Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn */
+	wire [BITS-1:0] proj_output2_out;
+	assign proj_output2_out[BITS-1:9] = 7'b0; // 9 output bits so set the rest (7) to 0
+	
 	pseudo_2 proj2 (
 		.clk(clk),
 		.start(rst),
-		.sw_in(io_in_wire[15:8]),
-		.seq_num(io_in_wire[7:0]),
+		.sw_in(io_in_wire[BITS-1:DWIDTH]),
+		.seq_num(io_in_wire[DWIDTH-1:0]),
 		.num(proj_output2_out[DWIDTH-1:0]),
 		.busy(proj_output2_out[DWIDTH])
 	);
 	
+	/* Project 3 Output Signals - David Simonetti, Thomas Mercurio, and Brooke Mackey */
+	wire [BITS-1:0] proj_output3_out;
+	// All 16 outputs, so no need for setting the bits to 0
+										
+	rsa_3 proj3(
+	 
+		.clk(clk),
+		.io_in(io_in[BITS-1:0]),
+		.io_out(proj_output3_out)
+
+	);
 
 	/* The 256-16 MUX Itself */
+	/* Wires connecting from Projects to the MUX */
+	wire [BITS-1:0] mux_outputs;
+	
 	mux256_to_16 the_output_mux(
 	
 		.input0(proj_output0_out),	// Proj0 - Prof. Morrison Project Connection
 		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young.
 		.input2(proj_output2_out),	// Proj2 - Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinn.
-		.input3(16'b0),
+		.input3(proj_output3_out),	// Proj3 - David Simonetti, Thomas Mercurio, and Brooke Mackey
 		.input4(16'b0),
 		.input5(16'b0),
 		.input6(16'b0),

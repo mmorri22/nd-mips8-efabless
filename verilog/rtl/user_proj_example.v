@@ -7,6 +7,7 @@
 `include "projects/proj3_dsimone2.v"
 `include "projects/proj4_evstar3.v"
 `include "projects/proj5_dchirumb.v"
+`include "projects/proj6_jbechte2.v"
 
 module user_proj_example #(
 	parameter DWIDTH=8, BITS = 16
@@ -115,6 +116,17 @@ module user_proj_example #(
 		.reset(rst),
 		.mode(mode)
 	);
+	
+	/* Project 6 - Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel */
+	wire [BITS-1:0] proj_output6_out;
+	assign proj_output6_out[BITS-1:7] = 9'b0; // 7 output bits so set the rest (9) to 0	
+
+	hangy_6 the_hangy(
+		.clk(clk),
+		.reset(rst),
+		.chip_input(io_in_wire[11:0]),
+		.chip_output(proj_output6_out[6:0])
+	);
 
 	/* The 256-16 MUX Itself */
 	/* Wires connecting from Projects to the MUX */
@@ -127,8 +139,8 @@ module user_proj_example #(
 		.input2(proj_output2_out),	// Proj2 - Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinn.
 		.input3(proj_output3_out),	// Proj3 - David Simonetti, Thomas Mercurio, and Brooke Mackey
 		.input4(proj_output4_out),	// Proj4 - Evan Day, Sofia Nelson, James Lindell, Eamon Tracey
-		.input5(16'b0),	// Proj5 - David Chirumbole, Noor Ackhar, and Marc Edde
-		.input6(16'b0),
+		.input5(proj_output5_out),	// Proj5 - David Chirumbole, Noor Ackhar, and Marc Edde
+		.input6(proj_output6_out),	// Proj6 - Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel
 		.input7(16'b0),
 		.input8(16'b0),
 		.input9(16'b0),

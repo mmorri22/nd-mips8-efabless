@@ -1,7 +1,7 @@
 magic
 tech gf180mcuD
 magscale 1 5
-timestamp 1702235970
+timestamp 1702252733
 << obsm1 >>
 rect 672 1538 279328 174078
 << metal2 >>
@@ -160,14 +160,15 @@ rect 263344 1538 263504 174078
 rect 271024 1538 271184 174078
 rect 278704 1538 278864 174078
 << obsm4 >>
-rect 109606 53321 109714 87855
-rect 109934 53321 117394 87855
-rect 117614 53321 125074 87855
-rect 125294 53321 132754 87855
-rect 132974 53321 140434 87855
-rect 140654 53321 148114 87855
-rect 148334 53321 155794 87855
-rect 156014 53321 156170 87855
+rect 94598 53545 102034 89143
+rect 102254 53545 109714 89143
+rect 109934 53545 117394 89143
+rect 117614 53545 125074 89143
+rect 125294 53545 132754 89143
+rect 132974 53545 140434 89143
+rect 140654 53545 148114 89143
+rect 148334 53545 155794 89143
+rect 156014 53545 162890 89143
 << labels >>
 rlabel metal3 s 279600 4256 280000 4312 6 io_in[0]
 port 1 nsew signal input
@@ -357,8 +358,8 @@ port 57 nsew signal input
 string FIXED_BBOX 0 0 280000 176000
 string LEFclass BLOCK
 string LEFview TRUE
-string GDS_END 20549872
-string GDS_FILE /mnt/c/Users/mmorri22/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_10_14_14/results/signoff/user_proj_example.magic.gds
-string GDS_START 435188
+string GDS_END 22182406
+string GDS_FILE /mnt/c/Users/mmorri22/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_10_18_52/results/signoff/user_proj_example.magic.gds
+string GDS_START 475490
 << end >>
 

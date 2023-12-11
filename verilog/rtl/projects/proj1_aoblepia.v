@@ -36,15 +36,15 @@ module parity_controller_1 (
 	);
 
     //states are here
-    parameter WAIT          = 5'd0;
-	parameter INIT          = 5'd1;
-	parameter ONE_STATE     = 5'd2;
-	parameter ZERO_STATE    = 5'd3;
-	parameter UPDATE_BIT    = 5'd4;
-	parameter CALCULATE     = 5'd5;
-    parameter ODD_STATE     = 5'd6;
-	parameter EVEN_STATE    = 5'd7;
-    parameter FINISH        = 5'd8;
+    localparam WAIT          = 5'd0;
+	localparam INIT          = 5'd1;
+	localparam ONE_STATE     = 5'd2;
+	localparam ZERO_STATE    = 5'd3;
+	localparam UPDATE_BIT    = 5'd4;
+	localparam CALCULATE     = 5'd5;
+    localparam ODD_STATE     = 5'd6;
+	localparam EVEN_STATE    = 5'd7;
+    localparam FINISH        = 5'd8;
     //parameter INIT2         = 5'd9;
 	
     //set to idle wait state

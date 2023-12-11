@@ -20,7 +20,7 @@ Here is the correlation between the wbs_sel_i signals and the student projects:
 |0|0|1|1|verilog/rtl/proj3.v|David Simonetti, Thomas Mercurio, and Brooke Mackey|
 |0|1|0|0|verilog/rtl/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
 |0|1|0|1|verilog/rtl/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
-|0|1|1|0|verilog/rtl/proj6.v| |
+|0|1|1|0|verilog/rtl/proj6.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
 |0|1|1|1|verilog/rtl/proj7.v| |
 |1|0|0|0|verilog/rtl/proj8.v| |
 |1|0|0|1|verilog/rtl/proj9.v| |
@@ -65,10 +65,10 @@ The tutorials for setting up this flow (with some limitations for introductory C
  * Project 2 - Cool Ranch <br>
  * Author(s): <br>
  *<br>
-	Varun Taneja vtaneja@nd.edu<br>
-	Brendan McGinn bmcginn2@nd.edu<br>
-	Sean Froning sfroning@nd.edu<br>
-	Antonio Karam akaram@nd.edu<br>
+	Varun Taneja <vtaneja@nd.edu><br>
+	Brendan McGinn <bmcginn2@nd.edu><br>
+	Sean Froning <sfroning@nd.edu><br>
+	Antonio Karam <akaram@nd.edu><br>
  *****************************************/<br>
 
 Our final project is an implementant of a Linear Shift Feedback Register (LSFR) in verilog.
@@ -93,9 +93,9 @@ The verilog emulates as if the inputs were switches on an FGPA board, from SW0 -
  * Project 3 - GF180 RSA Encryption Project <br>
  * Author(s): <br>
  *<br>
-	David Simonetti vtaneja@nd.edu<br>
-	Thomas Mercurio bmcginn2@nd.edu<br>
-	Brooke Mackey sfroning@nd.edu<br>
+	David Simonetti <vtaneja@nd.edu><br>
+	Thomas Mercurio <bmcginn2@nd.edu><br>
+	Brooke Mackey <sfroning@nd.edu><br>
  *****************************************/<br>
  
  Goal: Our project performs an RSA encryption of an 8-byte input, with changable public key values.
@@ -194,3 +194,17 @@ State 7: UPDATE_N
  David Chirumbole <dchirumb@nd.edu><br> 
  *****************************************/<br>
  
+ 
+ 
+ /*****************************************<br>
+ * Project 6 - GF180 Blind Hangman Project <br>
+ * Author(s): <br>
+ *<br>
+ 
+Josue Guerra <guerra4@nd.edu><br> 
+Steven Conaway <sconawa2@nd.edu><br> 
+Nicholas Palma <npalma2@nd.edu>
+Jacob Bechtel <jbechte2@nd.edu><br>
+ *****************************************/<br>
+ 
+Developed as a final project for the University of Notre Dame's Digital Integrated Circuits class. It plays a game of blind hangman using a finite state machine.

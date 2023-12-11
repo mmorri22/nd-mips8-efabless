@@ -182,6 +182,15 @@ State 7: UPDATE_N
  Eamon Tracey <etracey@nd.edu><br>
  *****************************************/<br>
  
+ Our design implements a regular expression validator for phone numbers. We define a phone number to have 10 digits (including the area code), with the digits separated by either dashes, dots, or spaces.
+
+```regex
+[0-9]{3}(-[0-9]{3}-[0-9]{4}|\.[0-9]{3}\.[0-9]{4}| [0-9]{3} [0-9]{4})
+```
+
+To implement our design in the circuitry, we utilize a controller and datapath. The controller represents the finite state machine that corresponds to the above regular expression. The datapath feeds the input to the controller to determine how to perform each state transition.
+
+The chip takes 3 inputs, `char_in[7:0]`, `reset`, and `process`. The `char_in[7:0]` input is the next character on the input string to be validated, in the form of an 8-bit ASCII value. The `reset` input resets the state of the controller to the initial state. Finally, the `process` input is used to tell the circuit to process the current signals on `char_in[7:0]` and `reset`. Our design works asynchronously, so you must raise `process` from low to high for each state transition to occur. Finally, the `match` output is a boolean value that indicates whether the expression matches.
  
  
 /*****************************************<br>

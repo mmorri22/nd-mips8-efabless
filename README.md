@@ -59,7 +59,32 @@ The tutorials for setting up this flow (with some limitations for introductory C
  Leo Herman <lherman@nd.edu>,<br>
  *****************************************/<br>
  
- <br>
+## Overview
+
+This repository contains the Verilog implementation of an 8-bit parity checker designed to be synthesized on the EFabless Caravel OpenLane flow. The circuit is intended for use with the Global Foundries gf180mcuD Process Development Kit as part of the coursework for CSE 30342 - Digital Integrated Circuits at the University of Notre Dame.
+
+## Circuit Description
+
+The parity checker circuit takes an 8-bit binary input (`data_in`) and checks for even and odd bit parity. The calculation is triggered by a rising edge on the `start` pin. The circuit operates using the clock signal (`clk`). The results are indicated through the following output pins:
+
+- `busy`: Goes high when calculations are being performed and drops low when results are ready.
+- `even_parity`: Set if `data_in` contains even bit parity.
+- `odd_parity`: Set if `data_in` contains odd bit parity.
+
+## Inputs and Outputs
+
+### Inputs
+
+- `clk`: Clock signal
+- `start`: Start pin (calculation begins when set high)
+- `data_in`: 8 bits of binary input
+
+### Outputs
+
+- `busy`: High when calculations are being performed. Drops low when results are ready.
+- `even_parity`: Set if `data_in` contains even bit parity.
+- `odd_parity`: Set if `data_in` contains odd bit parity.
+
  
  /*****************************************<br>
  * Project 2 - Cool Ranch <br>
@@ -71,23 +96,36 @@ The tutorials for setting up this flow (with some limitations for introductory C
 	Antonio Karam <akaram@nd.edu><br>
  *****************************************/<br>
 
-Our final project is an implementant of a Linear Shift Feedback Register (LSFR) in verilog.
+Our final project, <i>Cool Ranch</i>, is a chip implementation of a Linear Feedback Shift Register (LFSR), a form of pseudorandom number generator. The pseudorandom number is a product of the LFSR “taps” and the starting value “sequence number” stored in the registers. Both taps and sequence numbers are input given by the user.
 
-An LSFR acts as a pseudorandom number generator.
+Our verilog implementation was a six state High Level State Machine (HLSM), detailed in the table below.
+<code>inputs:			switches [7:0], seq_num [7:0], start</code><br>
+<code>outputs:		num[7:0], busy</code><br>
+<code>internal variables:	tap0[3:0], tap1[3:0], i[3:0], j[7:0], switch_shift[7:0]</code><br>
 
-inputs: switches [7:0], seq_num [7:0], start
+The LFSR works as follows:<br>
+An N-bit linear feedback shift register (LFSR) produces an N-bit pseudo random number. The pseudorandom number is a product of the LSFR taps and the starting value stored in the registers. We will be generating an 8-bit pseudo random number. Taps for the LFSR will be set via the SW input.  SW[0] indicates one of the taps is on bit 0, SW[1] indicates a tap on bit 1 … SW[7] indicates a tap on bit 7. The output for our chip is a 9-bit number. Out[0] will be our busy signal, which indicates that our HLSM is currently running and there is no output. The other 8 bits will be the randomly generated number.
 
-outputs: num[7:0], busy
-
-internal variables: tap0[3:0], tap1[3:0], i[3:0], j[7:0], switch_shift[7:0]
-
-An N-bit linear feedback shift register (LFSR) produces an N-bit pseudo random number.
-
-The pseudorandom number is a product of the LSFR taps and the starting value stored in the registers.
-
-For example, in L17, the registers were initialized to 0001 and the taps were on q[3] and q[0].
-
-The verilog emulates as if the inputs were switches on an FGPA board, from SW0 - SW15.
+|STATE|ACTION|TRANSITION|
+|---|---|---|
+|WAIT|busy ← 0|if (start) goto INIT<br>else goto WAIT|
+|INIT|i ← -1<br>j ← 0<br>busy ← 1<br>tap0 ← 1<br>tap1 ←0<br>switch_shift ← switches<br>num ← 1|goto FIND_TAP0|
+|FIND_TAP0|i ← i + 1<br>switch_shift ← switch_shift >> 1<br>|
+if (i == 8) goto CALCULATE<br>
+else if (switches[0] == 1) goto UPDATE_TAP0<br>
+else goto FIND_TAP0<br>|
+|UPDATE_TAP0|tap0 ← i|goto FIND_TAP1|
+|FIND_TAP1|i ← i + 1<br>switch_shift ← switch_shift >> 1<br>|
+if (i == 8) goto CALCULATE<br>
+else if (switches[0] == 1) goto UPDATE_TAP1<br>
+else goto FIND_TAP1|
+|UPDATE_TAP1|tap1 ← i|goto CALCULATE|
+|CALCULATE|
+j ← j + 1<br>
+num ← {num[6:0], num[tap0] ^ num[tap1]}|
+if (j == seq_num) goto FINISH<br>
+else goto CALCULATE|
+|FINISH|busy ← 0|goto WAIT|
 
  /*****************************************<br>
  * Project 3 - GF180 RSA Encryption Project <br>
@@ -216,4 +254,10 @@ Nicholas Palma <npalma2@nd.edu>
 Jacob Bechtel <jbechte2@nd.edu><br>
  *****************************************/<br>
  
-Developed as a final project for the University of Notre Dame's Digital Integrated Circuits class. It plays a game of blind hangman using a finite state machine.
+Our final project for the Digital Integrated Circuits class at the University of Notre Dame is a game called "Blind Hangman", where the user has 7 tries to guess a 5 letter word. The only feedback on their progress is whether or not they have made a correct guess for a given letter position.
+
+To do this, a 16 state finite state machine was implemented. The game starts in the INIT_GAME state, where it sets the enble and select bits for the game. It then proceeds into the GEN_WORD state, which selects the word from the word ROM based on user input. After the word is selected, it moves to the GUESS state, where the user inputs the letter they guess. Then the FSM proceeds to move through the CHECK_GUESS states, CHECK_GUESS_0, CHECK_GUESS_1, CHECK_GUESS_2, CHECK_GUESS_3, and CHECK_GUESS_4. If the letter matches the letter in that position of the word, it will move to CORRECT_0, CORRECT_1, CORRECT_2, CORRECT_3, or CORRECT_4 from the associated CHECK_GUESS state. It passes back to GUESS from any CORRECT states. If the user guessed a letter not in the word, the FSM moves to the ALL_INCORRECT state. This state increments the tries register, which keeps track of how many incorrect letters the user guessed, like the hangman diagram in the classic game. If all the letters are correct, the FSM moves to the WIN state, and if the user guesses incorrectly seven times, the FSM moves to the LOSE state. It will then go back to the INIT_GAME state for the user to play again.
+
+To implement letters, we used a custom 5 bit encoding for all lowercase English alphabet characters. The letter a is 00000, b is 00001, c is 00010, etc. This was used instead of ASCII to save space as no other characters were necessary for this project. The word ROM stores 64 twenty-five bit words to be selected by the user in the GEN_WORD state. These were generated using a python script and are stored in a text file which is read by verilog to create the ROM. Each words has no duplicate letters, as the FSM was not designed with that in mind.
+
+The chip uses 12 input pins and 7 output pins. The 6 high input pins are used to select which word to play the game with. The next highest pin is the next state pin, which is turned on whenever the FSM needs to change states. The remaining 5 pins are the letter the user guesses using our custom 5 bit letter encoding. The highest output pin is set to one when the user loses the game and the second highest is set to one when the user wins the game. Otherwise, they will remain at zero. The remaining 5 pins turn on if the user correctly guesses the letter in that position. For example, if the word is Notre, if the user guesses an e, the lowest pin will turn to a one.

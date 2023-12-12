@@ -17,14 +17,14 @@ Richard McManus	<rmcmanu2@nd.edu><br>
 Mike Slusarczyk	<mslusarc@nd.edu><br>
 Zack Tyler	<ztyler2@nd.edu><br>
 
+### Overview
+
 This design contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of NotreDame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
 
 
-/*****************************************
- * Signals to Projects Correlation 
- *****************************************/
+### Signals to Projects Correlation 
 
-Here is the correlation between the wbs_sel_i signals and the student projects:
+Here is the correlation between the wbs_sel_i signals and the student projects, as well as student citation:
 					
 |[3]|[2]|[1]|[0]|Location|Authors|
 |---|---|---|---|---|---|

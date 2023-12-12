@@ -17,7 +17,7 @@ Here is the correlation between the wbs_sel_i signals and the student projects:
 |0|0|0|0|verilog/rtl/projects/proj0.v|Professor Matthew Morrison|
 |0|0|0|1|verilog/rtl/projects/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
 |0|0|1|0|verilog/rtl/projects/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
-|0|0|1|1|verilog/rtl/projects/proj3.v|David Simonetti, Thomas Mercurio, and Brooke Mackey|
+|0|0|1|1|verilog/rtl/projects/proj3.v|David Simonetti, Thomas Mercurio, Brooke Mackey|
 |0|1|0|0|verilog/rtl/projects/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
 |0|1|0|1|verilog/rtl/projects/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
 |0|1|1|0|verilog/rtl/projects/proj6.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
@@ -299,7 +299,80 @@ Anna Briamonte <abriamon@nd.edu><br>
 Gavin Carr <gcarr2@nd.edu><br>
 Allison Fleming <aflemin7@nd.edu><br>
  *****************************************/<br>
- 
+
+`netflix.v` is a Verilog module designed to predict weekly Netflix user behavior in the context of a five-season show. It estimates the user's current viewing state, the number of complete show viewings (up to a maximum of three), and tracks the total number of weeks the simulation has been running. The module also counts the number of users simulated, with a new user's behavior prediction starting upon a reset. The week counter is cumulative throughout the simulation.
+
+## Inputs and Outputs
+- **Inputs:**
+  - `clk`: Clock input.
+  - `rst`: Reset input to begin tracking a new user.
+  - `tl`: 2-bit input representing time availability (`t`) and liking of the show (`l`).
+
+- **Outputs:**
+  - `output_result`: 15-bit output encoding various statistics. This output is divided into four sections:
+    - **Person Counter (Bits 14:12 - 3 bits):** Tracks the number of users simulated. Increments with each reset, indicating a new user.
+    - **Week Counter (Bits 11:5 - 7 bits):** Represents the cumulative count of weeks since the simulation started. It continuously increments, independent of resets.
+    - **Finished Counter (Bits 4:3 - 2 bits):** Counts how many times the user has watched the entire show, with a maximum count of 3.
+    - **State (Bits 2:0 - 3 bits):** Indicates the current state of the user's viewing progress, ranging from 'Not Started' to 'Finished' (covering all five seasons).
+
+## States
+- `NS` (Not Started)
+- `S1` to `S5` (Season 1 to Season 5)
+- `F` (Finished)
+
+## Functionality
+- **State Machine:** The module operates as a state machine, progressing through states based on the `tl` input and the current state.
+- **Week Counter:** Increments each clock cycle, tracking the simulation duration.
+- **Person Counter:** Increments upon a reset (`rst`), signaling a new user.
+- **Finished Counter:** Tracks the number of times the user has finished the show.
+- **Next State Logic:** Determines the next state based on the current state, time availability (`t`), and show liking (`l`).
+
+## Simulation Details
+- The user progresses through the seasons based on their time availability and liking for the show.
+- Once a user finishes the show, the `finished` counter increments. If it hasn't reached the maximum count (3), the state resets to `NS`.
+- The `week_counter` and `person_counter` provide an ongoing tally of the simulation's duration and the number of users simulated, respectively.
+
+## State Transition Logic
+
+The state machine employed uses a combination of user's time availability and show liking to determine the transitions between different states. Here's a detailed breakdown of what is required for a user to move from one state to another and the rationale behind it:
+
+### State Transitions
+- **Not Started (NS) to Season 1 (S1):** 
+  - **Requirement:** User must have both time (`t`) and a liking (`l`) for the show.
+  - **Rationale:** Starting a new show typically requires both an interest in the content and availability of free time.
+
+- **Season 1 (S1) to Season 2 (S2), and so on up to Season 4 (S4):**
+  - **Requirement:** Continued time availability and liking for the show.
+  - **Rationale:** Progression through consecutive seasons is based on the user continuing to enjoy the show and having time to watch it.
+
+- **Season 4 (S4) to Season 5 (S5):**
+  - **Requirement:** Liking for the show, irrespective of time availability.
+  - **Rationale:** By the time a user reaches the fourth season, it is assumed that they are invested enough in the show to find time to watch the final season, reflecting a typical binge-watching behavior.
+
+- **Season 5 (S5) to Finished (F):**
+  - **Requirement:** Either time availability or liking for the show.
+  - **Rationale:** Completion of the final season and thereby the entire series occurs if the user continues to like the show or has spare time. This accounts for the tendency to complete a series even if interest wanes slightly, just to see how it ends.
+
+- **Finished (F) to Not Started (NS) or Stay in Finished (F):**
+  - **Requirement:** Depends on the number of times the show has been finished.
+  - **Rationale:** Once a user finishes the show, they may choose to rewatch it. This cycle can occur up to three times, reflecting typical viewer behavior where some shows are rewatched multiple times. After three complete viewings, the user remains in the Finished state, assuming they move on to other content.
+
+### Additional Notes
+- **Time (t) and Liking (l) Logic:** The model uses these two binary inputs to simulate the decision-making process of a viewer. While simplistic, they capture two critical factors in content consumption: availability and interest.
+- **Week Counter:** The week counter increases regardless of state changes, indicating the passage of time in the simulation.
+
+### Implications
+- This state transition logic models typical user behavior patterns in consuming a multi-season television show.
+- It reflects the balance between interest in content (liking) and practical considerations (time availability).
+- The model's simplicity makes it broadly applicable but may not capture the nuances of individual viewing habits or external factors influencing viewing decisions.
+
+## Limitations
+- This model is a simplification and may not accurately predict all user behaviors.
+- The prediction is based solely on the binary inputs of time availability and show liking, which may not encompass all factors influencing user behavior.
+
+## Future Enhancements
+- Introducing more nuanced metrics for time and interest, possibly on a scale, to better capture varying degrees of viewer engagement.
+- Considering external factors like peer influence, marketing, or platform recommendations which might alter viewing patterns.
  
  
  /*****************************************<br>

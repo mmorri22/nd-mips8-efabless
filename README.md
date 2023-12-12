@@ -8,6 +8,17 @@ Push Date: 12/11/2023
 
 This project contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of NotreDame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
 
+Teaching Assistants:
+Lindsay Falk	lfalk2@nd.edu
+David Finnell	dfinnell@nd.edu
+Ethan Lau	elau@nd.edu
+Drew Lair	dlair@nd.edu
+Dani Nah	hnah@nd.edu
+Richard McManus	rmcmanu2@nd.edu
+Mike Slusarczyk	mslusarc@nd.edu
+Zack Tyler	ztyler2@nd.edu
+
+
 /*****************************************
  * Signals to Projects Correlation 
  *****************************************/
@@ -108,21 +119,11 @@ An N-bit linear feedback shift register (LFSR) produces an N-bit pseudo random n
 |---|---|---|
 |WAIT|busy ← 0|if (start) goto INIT; else goto WAIT|
 |INIT|i ← -1; j ← 0; busy ← 1; tap0 ← 1; tap1 ←0; switch_shift ← switches; num ← 1|goto FIND_TAP0|
-|FIND_TAP0|i ← i + 1; switch_shift ← switch_shift >> 1|
-if (i == 8) goto CALCULATE; 
-else if (switches[0] == 1) goto UPDATE_TAP0;
-else goto FIND_TAP0|
+|FIND_TAP0|i ← i + 1; switch_shift ← switch_shift >> 1|if (i == 8) goto CALCULATE;else if (switches[0] == 1) goto UPDATE_TAP0;else goto FIND_TAP0|
 |UPDATE_TAP0|tap0 ← i|goto FIND_TAP1|
-|FIND_TAP1|i ← i + 1; switch_shift ← switch_shift >> 1|
-if (i == 8) goto CALCULATE; 
-else if (switches[0] == 1) goto UPDATE_TAP1; 
-else goto FIND_TAP1|
+|FIND_TAP1|i ← i + 1; switch_shift ← switch_shift >> 1|if (i == 8) goto CALCULATE; else if (switches[0] == 1) goto UPDATE_TAP1; else goto FIND_TAP1|
 |UPDATE_TAP1|tap1 ← i|goto CALCULATE|
-|CALCULATE|
-j ← j + 1; 
-num ← {num[6:0], num[tap0] ^ num[tap1]}|
-if (j == seq_num) goto FINISH; 
-else goto CALCULATE|
+|CALCULATE|j ← j + 1; num ← {num[6:0], num[tap0] ^ num[tap1]}|if (j == seq_num) goto FINISH; else goto CALCULATE|
 |FINISH|busy ← 0|goto WAIT|
 
  /*****************************************<br>
@@ -404,3 +405,5 @@ Jacob Frabutt <jfrabut2@nd.edu><br>
 Brigid Burns <bburns4@nd.edu><br>
 Rory St. Hilaire <rsthila2@nd.edu><br>
  *****************************************/<br>
+ 
+Our project creates hardware to implement a simple encryption algorithm: simple DES. Simple DES takes in 8-bits of plaintext and 10-bit key. Since we only have 16-bits of input, the 2 most significant bits of the key are simply pre-set. This one 10-bit key then goes through some shift and permutation operations to create two 8-bit keys which are used internally. The plaintext and keys are then used as inputs to an encryption module. This module contains multiple steps of permutations, expansion, XOR, and shifting to generate the ciphertext. The full simple DES algorithm also implements something called switch functions, but because these require memory to be implemented, and due to the scope and time limitations of our project, we did not include this step. The output of our module is the 8-bit ciphertext that resulted from encryption.

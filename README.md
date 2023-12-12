@@ -1,4 +1,4 @@
-# GF180 MIPS Demo Project Example
+# Notre Dame Fall 2023 CSE 30342 GF180 Group Projects
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://platform.efabless.com/shuttles/GFMPW-1?_gl=1*128mnaf*_gcl_au*MjA1NzQ1Njk3OS4xNzAyMzM3MDkw*_ga*MTE5OTU4MzM2OC4xNzAyMzM3MDkw*_ga_GHTCZK9NXD*MTcwMjM0OTc5OC4zLjEuMTcwMjM1NjUxNy4yNi4wLjA.)
 

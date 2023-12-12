@@ -1,10 +1,12 @@
 # GF180 MIPS Demo Project Example
 
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml)
+
 Professor: Matthew Morrison, Associate Teaching Professor, University of Notre Dame
 Email:  matt.morrison@nd.edu
 Push Date: 12/11/2023
 
-This project contains the 16 group projects for the CSE 30342 Digital Integrated Circuits course. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
+This project contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of NotreDame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
 
 /*****************************************
  * Signals to Projects Correlation 
@@ -14,17 +16,18 @@ Here is the correlation between the wbs_sel_i signals and the student projects:
 					
 |[3]|[2]|[1]|[0]|Location|Authors|
 |---|---|---|---|---|---|
-|0|0|0|0|verilog/rtl/projects/proj0.v|Professor Matthew Morrison|
-|0|0|0|1|verilog/rtl/projects/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
-|0|0|1|0|verilog/rtl/projects/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
-|0|0|1|1|verilog/rtl/projects/proj3.v|David Simonetti, Thomas Mercurio, Brooke Mackey|
-|0|1|0|0|verilog/rtl/projects/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
-|0|1|0|1|verilog/rtl/projects/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
-|0|1|1|0|verilog/rtl/projects/proj6.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
-|0|1|1|1|verilog/rtl/projects/proj7.v|Kate Hjorth, Abby Brown, Nathan Piecyk|
-|1|0|0|0|verilog/rtl/projects/proj8.v|Lydia Csaszar, Dan Schrage, Kate Mealey, Phyona Schrader|
-|1|0|0|1|verilog/rtl/projects/proj9.v|Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming|
-|1|0|1|0|verilog/rtl/projects/proj10.v|Zach Vincent, Daniel Yu, Andrew Mitchell|
+|0|0|0|0|verilog/rtl/projects/proj0_morrison.v|Professor Matthew Morrison|
+|0|0|0|1|verilog/rtl/projects/proj1_aoblepia.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
+|0|0|1|0|verilog/rtl/projects/proj2_akaram.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
+|0|0|1|1|verilog/rtl/projects/proj3_dsimone2.v|David Simonetti, Thomas Mercurio, Brooke Mackey|
+|0|1|0|0|verilog/rtl/projects/proj4_evstar3.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
+|0|1|0|1|verilog/rtl/projects/proj5_dchirumb.v|Noor Achkar, David Chirumbole, Marc Edde|
+|0|1|1|0|verilog/rtl/projects/proj6_jbechte2.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
+|0|1|1|1|verilog/rtl/projects/proj7_khjorth.v|Kate Hjorth, Abby Brown, Nathan Piecyk|
+|1|0|0|0|verilog/rtl/projects/proj8_lcsaszar.v|Lydia Csaszar, Dan Schrage, Kate Mealey, Phyona Schrader|
+|1|0|0|1|verilog/rtl/projects/proj9_skopfer.v|Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming|
+|1|0|1|0|verilog/rtl/projects/proj10_zvincent.v|Zach Vincent, Daniel Yu, Andrew Mitchell|
+|1|0|1|1|verilog/rtl/projects/proj11_jfrabut2.v|Jacob Frabutt, Brigid Burns, Rory St. Hilare|
  
 /*****************************************<br>
  * Project 0 - MIPS Demo <br>
@@ -103,22 +106,22 @@ An N-bit linear feedback shift register (LFSR) produces an N-bit pseudo random n
 
 |STATE|ACTION|TRANSITION|
 |---|---|---|
-|WAIT|busy ← 0|if (start) goto INIT<br>else goto WAIT|
-|INIT|i ← -1<br>j ← 0<br>busy ← 1<br>tap0 ← 1<br>tap1 ←0<br>switch_shift ← switches<br>num ← 1|goto FIND_TAP0|
-|FIND_TAP0|i ← i + 1<br>switch_shift ← switch_shift >> 1<br>|
-if (i == 8) goto CALCULATE<br>
-else if (switches[0] == 1) goto UPDATE_TAP0<br>
-else goto FIND_TAP0<br>|
+|WAIT|busy ← 0|if (start) goto INIT; else goto WAIT|
+|INIT|i ← -1; j ← 0; busy ← 1; tap0 ← 1; tap1 ←0; switch_shift ← switches; num ← 1|goto FIND_TAP0|
+|FIND_TAP0|i ← i + 1; switch_shift ← switch_shift >> 1|
+if (i == 8) goto CALCULATE; 
+else if (switches[0] == 1) goto UPDATE_TAP0;
+else goto FIND_TAP0|
 |UPDATE_TAP0|tap0 ← i|goto FIND_TAP1|
-|FIND_TAP1|i ← i + 1<br>switch_shift ← switch_shift >> 1<br>|
-if (i == 8) goto CALCULATE<br>
-else if (switches[0] == 1) goto UPDATE_TAP1<br>
+|FIND_TAP1|i ← i + 1; switch_shift ← switch_shift >> 1|
+if (i == 8) goto CALCULATE; 
+else if (switches[0] == 1) goto UPDATE_TAP1; 
 else goto FIND_TAP1|
 |UPDATE_TAP1|tap1 ← i|goto CALCULATE|
 |CALCULATE|
-j ← j + 1<br>
+j ← j + 1; 
 num ← {num[6:0], num[tap0] ^ num[tap1]}|
-if (j == seq_num) goto FINISH<br>
+if (j == seq_num) goto FINISH; 
 else goto CALCULATE|
 |FINISH|busy ← 0|goto WAIT|
 
@@ -390,4 +393,14 @@ Daniel Yu <dyu4@nd.edu><br>
 Andrew Mitchell <amitch27@nd.edu><br>
  *****************************************/<br>
 
-This project is a simple controller for the traffic signals at a 4-way intersection. It takes in 4 1-bit inputs (n, e, s, w) which represent whether or not a car is at each of the four streets. It then determines what color the street lights should be, and outputs an 8-bit number representing the state of the lights with 2 bits for each direction. 00 represents a red light, 01 represents a yellow light, and 10 represents a green light. For example, the output 00100010 would represent green lights in the east and west directions. The chip is programmed only to change the lights when there are cars waiting at the cross street. If there are no cars with a red light at the intersection, the light will stay green in the current direction. Additionally, the green and yellow lights employ a minimum wait time so that the lights are guaranteed to stay the same for a certain number of clock cycles before allowing input changes to affect the state.
+This project lays out a processor that acts as a traffic controller, deciding the traffic signals at a 4-way intersection. It takes in 4 1-bit inputs (named the cardinal directions `n`, `e`, `s`, `w`) representing the presence of a car at each of the four streets. It then determines what color the street lights should be, and outputs an 8-bit number representing the state of the lights with 2 bits for each direction. `00` represents a red light, `01` represents a yellow light, and `10` represents a green light. For example, the output `00100010` would represent green lights in the east and west directions. The chip is programmed only to change the lights when there are cars waiting at the cross street. If there are no cars with a red light at the intersection, the light will stay green in the current direction. When signals need to switch, the green and yellow lights employ a minimum wait time so that the lights are guaranteed to stay the same for a certain number of clock cycles before allowing input changes to affect the state.
+
+
+/*****************************************<br>
+* Project 11 - DES Encryption Simulator <br>
+* Author(s): <br>
+
+Jacob Frabutt <jfrabut2@nd.edu><br>
+Brigid Burns <bburns4@nd.edu><br>
+Rory St. Hilaire <rsthila2@nd.edu><br>
+ *****************************************/<br>

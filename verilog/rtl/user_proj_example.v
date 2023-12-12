@@ -12,6 +12,7 @@
 `include "projects/proj8_lcsaszar.v"
 `include "projects/proj9_skopfer.v"
 `include "projects/proj10_zvincent.v"
+`include "projects/proj11_jfrabut2.v"
 
 module user_proj_example #(
 	parameter DWIDTH=8, BITS = 16
@@ -185,11 +186,21 @@ module user_proj_example #(
 		.w(io_in_wire[0]),
 		.lights(proj_output10_out[7:0])
 	);
+	
+	/* Project 11 - Jacob Frabutt, Brigid Burns, Rory St. Hilare */
+	wire [BITS-1:0] proj_output11_out;
+	assign proj_output11_out[BITS-1:8] = 8'b0; // 8 output bits so set the rest (8) to 0
 
+    simpleDES proj11( 
+		.clk(clk),
+        .reset(rst),
+        .in_signal(io_in_wire),
+        .out_signal(proj_output11_out[7:0])
+	);
 
-	/* The 256-16 MUX Itself */
+	/* The 192-16 MUX Itself */
 	/* Wires connecting from Projects to the MUX */	
-	mux176_to_16 the_output_mux(
+	mux192_to_16 the_output_mux(
 	
 		.input0(proj_output0_out),	// Proj0 - Prof. Morrison* Project Connection
 		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias*, Leo Herman*, Allison Gentry*, Garrett Young*.
@@ -202,6 +213,7 @@ module user_proj_example #(
 		.input8(proj_output8_out),	// Proj8 - Lydia Csaszar*, Dan Schrage*, Kate Mealey*, Phyona Schrader*
 		.input9(proj_output9_out),	// Proj9 - Sarah Kopfer*, Anna Briamonte*, Gavin Carr*, Allison Fleming*
 		.input10(proj_output10_out),	// Proj10 - Zach Vincent*, Daniel Yu*, Andrew Mitchell*
+		.input11(proj_output11_out),	// Proj11 - Jacob Frabutt, Brigid Burns, et al
 		.sel(wbs_sel_i),
 		.outputs(mux_outputs)
 		
@@ -216,13 +228,13 @@ endmodule
 /************* Connection MUX *************************/
 /*** Connect all 11 projects to the 16-bit output ****/
 /******************************************************/
-module mux176_to_16
+module mux192_to_16
 #(
 	parameter INPUTS = 16
 )
 (
 	input  logic [INPUTS-1:0] input0, input1, input2, input3, input4, input5, input6, 
-	input  logic [INPUTS-1:0] input7, input8, input9, input10, 
+	input  logic [INPUTS-1:0] input7, input8, input9, input10, input11,
 	input  logic [3:0]       sel, 
 	output  logic [INPUTS-1:0] outputs
 
@@ -241,7 +253,7 @@ module mux176_to_16
       4'b1000: outputs = input8;
       4'b1001: outputs = input9;
       4'b1010: outputs = input10;
-      4'b1011: outputs = input0;
+      4'b1011: outputs = input11;
       4'b1100: outputs = input0;
       4'b1101: outputs = input0;
       4'b1110: outputs = input0;

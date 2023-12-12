@@ -1,6 +1,6 @@
 # GF180 MIPS Demo Project Example
 
-[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://platform.efabless.com/shuttles/GFMPW-1?_gl=1*128mnaf*_gcl_au*MjA1NzQ1Njk3OS4xNzAyMzM3MDkw*_ga*MTE5OTU4MzM2OC4xNzAyMzM3MDkw*_ga_GHTCZK9NXD*MTcwMjM0OTc5OC4zLjEuMTcwMjM1NjUxNy4yNi4wLjA.)
 
 Professor: Matthew Morrison, Associate Teaching Professor, University of Notre Dame
 Email:  matt.morrison@nd.edu
@@ -274,7 +274,7 @@ Abby Brown <abrown35@nd.edu><br>
 Nathan Piecyk <npiecyk@nd.edu><br>
  *****************************************/<br>
  
- 
+Our code multiplies two four bit numbers by use of a combination of a finite state machine and a multiplier, which is made up of half adders and full adders. It utilizes a finite state machine to drive the multiplier, which in itself uses four half adders and eight full adders. These adders are combined in such a way to efficiently multiply two four bit numbers. The finite state machine has six states, IDLE, LOAD, MULTIPLY, CHECK, LOAD_P, and DONE. In the idle state, the P register is initialized. In the load state, inputs A and B are loaded in. In the multiply state, the multiplier is called, and using the half and full adders, it multiplies A and B and stores the result in P. Next, in the check state, we check if P is greater than 15. If it is, we return to the idle state, and if not, we switch to the load_p state, where the result P is loaded into the B input, and then transition to the multiply state again.
  
 
 /*****************************************<br>

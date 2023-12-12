@@ -235,7 +235,13 @@ The chip takes 3 inputs, `char_in[7:0]`, `reset`, and `process`. The `char_in[7:
  Marc Edde <medde@nd.edu> <br>
  David Chirumbole <dchirumb@nd.edu><br> 
  *****************************************/<br>
- 
+
+The project starts with a "Start" that is at state 0. The mode will determine if the project encrypts or decrypts. In fact, in the event the mode is equal to 1, it will go through the decryption process and if it is 0, it will encrypt.
+Encrypt is at state 3. If the reset is set to 0, it will go to the second encryption that is at state 4. If the reset is set to 1, it will go to the reset at state 1. In the event it goes to the second encryption, it will either go to the "Finish" at state 2 (for reset = 0) or go to the reset when reset is equal to 1.
+Decrypt is at state 5. If the reset is set to 0, it will go to the second decryption that is at state 6. If the reset is set to 1, it will go to the reset at state 1. In the event it goes to the second decryption, it will either go to the "Finish" at state 2 (for reset = 0) or go to the reset when reset is equal to 1.
+When it gets to the "Finish" state, it will automatically go back to the "Start".
+When it gets to the "Reset" state, it also goes automatically to the "Start" state.
+
  
  
 /*****************************************<br>

@@ -19,7 +19,7 @@ Zack Tyler	<ztyler2@nd.edu><br>
 
 ### Overview
 
-This design contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of Notre Dame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
+This design contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of Notre Dame which were targeted for the eFabless Caravel Project for the GF180 gfmpw-1 shuttle. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
 
 
 ### Signals to Projects Correlation 

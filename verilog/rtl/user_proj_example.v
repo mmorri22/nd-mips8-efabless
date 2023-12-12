@@ -8,6 +8,10 @@
 `include "projects/proj4_evstar3.v"
 `include "projects/proj5_dchirumb.v"
 `include "projects/proj6_jbechte2.v"
+`include "projects/proj7_khjorth.v"
+`include "projects/proj8_lcsaszar.v"
+`include "projects/proj9_skopfer.v"
+`include "projects/proj10_zvincent.v"
 
 module user_proj_example #(
 	parameter DWIDTH=8, BITS = 16
@@ -127,29 +131,77 @@ module user_proj_example #(
 		.chip_input(io_in_wire[11:0]),
 		.chip_output(proj_output6_out[6:0])
 	);
+	
+	/* Project 6 - Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel */
+	wire [BITS-1:0] proj_output7_out;
+	assign proj_output7_out[BITS-1:8] = 8'b0; // 8 output bits so set the rest (8) to 0
+
+	/* Project 7 - Kate Hjorth, Abby Brown, Nathan Piecyk */
+	wire [BITS-1:0] mux_outputs;
+	fbf_mult_7 kates_mult(
+		.A(io_in_wire[3:0]),
+		.B(io_in_wire[7:4]), 
+		.P(proj_output7_out[7:0])
+	);
+
+	/* Project 8 - Lydia Csaszar, Dan Schrage, Kate Mealey, Phyona Schrader */
+	wire [BITS-1:0] proj_output8_out;
+	assign proj_output8_out[BITS-1:6] = 10'b0; // 10 output bits so set the rest (6) to 0
+
+	final_path_8 the_final_path_8(
+		.clk(io_in_wire[3]),
+		.R(io_in_wire[2]),
+		.C(io_in_wire[1]),
+		.in_EN(io_in_wire[0]),
+		.out_NR(proj_output8_out[5]),
+		.out_NG(proj_output8_out[4]),
+		.out_NY(proj_output8_out[3]),
+		.out_ER(proj_output8_out[2]),
+		.out_EG(proj_output8_out[1]),
+		.out_EY(proj_output8_out[0])
+	);
+
+	/* Project 9 - Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming */
+	wire [BITS-1:0] proj_output9_out;
+	assign proj_output9_out[BITS-1] = 1'b0; // One bit unused
+
+	netflix proj9(
+		.clk(clk),
+		.rst(rst),
+		.tl(io_in_wire[1:0]),
+		.output_result(proj_output9_out[14:0])
+	);
+	
+	
+	/* Project 10 - Zach Vincent, Daniel Yu, Andrew Mitchell */
+	wire [BITS-1:0] proj_output10_out;
+	assign proj_output10_out[BITS-1:8] = 8'b0; // 8 output bits so set the rest (8) to 0
+	
+	traffic proj10(
+		.clk(clk),
+		.n(io_in_wire[3]),
+		.e(io_in_wire[2]),
+		.s(io_in_wire[1]),
+		.w(io_in_wire[0]),
+		.lights(proj_output10_out[7:0])
+	);
+
 
 	/* The 256-16 MUX Itself */
-	/* Wires connecting from Projects to the MUX */
-	wire [BITS-1:0] mux_outputs;
+	/* Wires connecting from Projects to the MUX */	
+	mux176_to_16 the_output_mux(
 	
-	mux256_to_16 the_output_mux(
-	
-		.input0(proj_output0_out),	// Proj0 - Prof. Morrison Project Connection
-		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young.
-		.input2(proj_output2_out),	// Proj2 - Antonion Karam, Sean Froning, Varun Taneja, Brendan McGinn.
-		.input3(proj_output3_out),	// Proj3 - David Simonetti, Thomas Mercurio, and Brooke Mackey
-		.input4(proj_output4_out),	// Proj4 - Evan Day, Sofia Nelson, James Lindell, Eamon Tracey
-		.input5(proj_output5_out),	// Proj5 - David Chirumbole, Noor Ackhar, and Marc Edde
-		.input6(proj_output6_out),	// Proj6 - Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel
-		.input7(16'b0),
-		.input8(16'b0),
-		.input9(16'b0),
-		.input10(16'b0),
-		.input11(16'b0),
-		.input12(16'b0),
-		.input13(16'b0),
-		.input14(16'b0),
-		.input15(16'b0),
+		.input0(proj_output0_out),	// Proj0 - Prof. Morrison* Project Connection
+		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias*, Leo Herman*, Allison Gentry*, Garrett Young*.
+		.input2(proj_output2_out),	// Proj2 - Antonio Karam*, Sean Froning*, Varun Taneja*, Brendan McGinn*.
+		.input3(proj_output3_out),	// Proj3 - David Simonetti*, Thomas Mercurio*, and Brooke Mackey*
+		.input4(proj_output4_out),	// Proj4 - Evan Day*, Sofia Nelson*, James Lindell*, Eamon Tracey*
+		.input5(proj_output5_out),	// Proj5 - David Chirumbole, Noor Ackhar*, and Marc Edde*
+		.input6(proj_output6_out),	// Proj6 - Josue Guerra*, Steven Conaway*, Nicholas Palma*, Jacob Bechtel*
+		.input7(proj_output7_out),	// Proj7 - Kate Hjorth*, Abby Brown*, Nathan Piecyk
+		.input8(proj_output8_out),	// Proj8 - Lydia Csaszar*, Dan Schrage*, Kate Mealey*, Phyona Schrader*
+		.input9(proj_output9_out),	// Proj9 - Sarah Kopfer*, Anna Briamonte*, Gavin Carr*, Allison Fleming*
+		.input10(proj_output10_out),	// Proj10 - Zach Vincent*, Daniel Yu*, Andrew Mitchell*
 		.sel(wbs_sel_i),
 		.outputs(mux_outputs)
 		
@@ -162,16 +214,15 @@ endmodule
 
 /******************************************************/
 /************* Connection MUX *************************/
-/*** Connect all 16 projects to the 16-bit output ****/
+/*** Connect all 11 projects to the 16-bit output ****/
 /******************************************************/
-module mux256_to_16
+module mux176_to_16
 #(
 	parameter INPUTS = 16
 )
 (
 	input  logic [INPUTS-1:0] input0, input1, input2, input3, input4, input5, input6, 
-	input  logic [INPUTS-1:0] input7, input8, input9, input10, input11, input12, 
-	input  logic [INPUTS-1:0] input13, input14, input15,
+	input  logic [INPUTS-1:0] input7, input8, input9, input10, 
 	input  logic [3:0]       sel, 
 	output  logic [INPUTS-1:0] outputs
 
@@ -190,11 +241,11 @@ module mux256_to_16
       4'b1000: outputs = input8;
       4'b1001: outputs = input9;
       4'b1010: outputs = input10;
-      4'b1011: outputs = input11;
-      4'b1100: outputs = input12;
-      4'b1101: outputs = input13;
-      4'b1110: outputs = input14;
-      4'b1111: outputs = input15;
+      4'b1011: outputs = input0;
+      4'b1100: outputs = input0;
+      4'b1101: outputs = input0;
+      4'b1110: outputs = input0;
+      4'b1111: outputs = input0;
     endcase
 	
 endmodule

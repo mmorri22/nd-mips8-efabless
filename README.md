@@ -14,22 +14,17 @@ Here is the correlation between the wbs_sel_i signals and the student projects:
 					
 |[3]|[2]|[1]|[0]|Location|Authors|
 |---|---|---|---|---|---|
-|0|0|0|0|verilog/rtl/proj0.v|Professor Matthew Morrison|
-|0|0|0|1|verilog/rtl/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
-|0|0|1|0|verilog/rtl/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
-|0|0|1|1|verilog/rtl/proj3.v|David Simonetti, Thomas Mercurio, and Brooke Mackey|
-|0|1|0|0|verilog/rtl/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
-|0|1|0|1|verilog/rtl/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
-|0|1|1|0|verilog/rtl/proj6.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
-|0|1|1|1|verilog/rtl/proj7.v| |
-|1|0|0|0|verilog/rtl/proj8.v| |
-|1|0|0|1|verilog/rtl/proj9.v| |
-|1|0|1|0|verilog/rtl/proj10.v| |
-|1|0|1|1|verilog/rtl/proj11.v| |
-|1|1|0|0|verilog/rtl/proj12.v| |
-|1|1|0|1|verilog/rtl/proj13.v| |
-|1|1|1|0|verilog/rtl/proj14.v| |
-|1|1|1|1|verilog/rtl/proj15.v| |
+|0|0|0|0|verilog/rtl/projects/proj0.v|Professor Matthew Morrison|
+|0|0|0|1|verilog/rtl/projects/proj1.v|Aidan Oblepias, Leo Herman, Allison Gentry, Garrett Young|
+|0|0|1|0|verilog/rtl/projects/proj2.v|Antonio Karam, Sean Froning, Varun Taneja, Brendan McGinn|
+|0|0|1|1|verilog/rtl/projects/proj3.v|David Simonetti, Thomas Mercurio, and Brooke Mackey|
+|0|1|0|0|verilog/rtl/projects/proj4.v|Evan Day, Sofia Nelson, James Lindell, Eamon Tracey|
+|0|1|0|1|verilog/rtl/projects/proj5.v|Noor Achkar, David Chirumbole, Marc Edde|
+|0|1|1|0|verilog/rtl/projects/proj6.v|Josue Guerra, Steven Conaway, Nicholas Palma, Jacob Bechtel|
+|0|1|1|1|verilog/rtl/projects/proj7.v|Kate Hjorth, Abby Brown, Nathan Piecyk|
+|1|0|0|0|verilog/rtl/projects/proj8.v|Lydia Csaszar, Dan Schrage, Kate Mealey, Phyona Schrader|
+|1|0|0|1|verilog/rtl/projects/proj9.v|Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming|
+|1|0|1|0|verilog/rtl/projects/proj10.v|Zach Vincent, Daniel Yu, Andrew Mitchell|
  
 /*****************************************<br>
  * Project 0 - MIPS Demo <br>
@@ -243,10 +238,9 @@ The chip takes 3 inputs, `char_in[7:0]`, `reset`, and `process`. The `char_in[7:
  
  
  
- /*****************************************<br>
- * Project 6 - GF180 Blind Hangman Project <br>
- * Author(s): <br>
- *<br>
+/*****************************************<br>
+* Project 6 - GF180 Blind Hangman Project <br>
+* Author(s): <br>
  
 Josue Guerra <guerra4@nd.edu><br> 
 Steven Conaway <sconawa2@nd.edu><br> 
@@ -261,3 +255,60 @@ To do this, a 16 state finite state machine was implemented. The game starts in 
 To implement letters, we used a custom 5 bit encoding for all lowercase English alphabet characters. The letter a is 00000, b is 00001, c is 00010, etc. This was used instead of ASCII to save space as no other characters were necessary for this project. The word ROM stores 64 twenty-five bit words to be selected by the user in the GEN_WORD state. These were generated using a python script and are stored in a text file which is read by verilog to create the ROM. Each words has no duplicate letters, as the FSM was not designed with that in mind.
 
 The chip uses 12 input pins and 7 output pins. The 6 high input pins are used to select which word to play the game with. The next highest pin is the next state pin, which is turned on whenever the FSM needs to change states. The remaining 5 pins are the letter the user guesses using our custom 5 bit letter encoding. The highest output pin is set to one when the user loses the game and the second highest is set to one when the user wins the game. Otherwise, they will remain at zero. The remaining 5 pins turn on if the user correctly guesses the letter in that position. For example, if the word is Notre, if the user guesses an e, the lowest pin will turn to a one.
+
+/*****************************************<br>
+* Project 7 - Multiplier Finite State Machine Example <br>
+* Author(s): <br>
+
+Kate Hjorth <khjorth@nd.edu><br>
+Abby Brown <abrown35@nd.edu><br>
+Nathan Piecyk <npiecyk@nd.edu><br>
+ *****************************************/<br>
+ 
+ 
+ 
+
+/*****************************************<br>
+* Project 8 - Traffic Light Controller <br>
+* Author(s): <br>
+
+Dan Schrage <dschrag2@nd.edu><br>
+Lydia Csaszar <lcsaszar@nd.edu><br>
+Kate Mealey <kmealey2@nd.edu><br>
+Phyona Schrader <pschrad2@nd.edu><br>
+ *****************************************/<br>
+
+### Project: Traffic Light Controller
+#### About
+This project is based on the examples in section **2.4.5** of Digital Electronics 3: Finite-state Machines, and the FSM state machine example from Chapter 5 Section 5 of Figure 5.5 of The Zen of Exotic Computing [2][1]. There are two modules to the design: the controller and the counter. The counter has the inputs of EN =1, clk, clr (clear) with the outputs of rco<sub>L</sub> (long count), rco<sub>s</sub> (short count). The counter-output values are fed into S and L controller inputs, respectively. Then, the controller has the remaining R, C, and clk inputs, with IC, NR, NG, NY, ER, EG, and EY outputs. The outputs of the N value represent the state of the traffic light facing north-south streets, while the output of the values starting with E represents the state of the traffic light facing east and west. By default, the North/South street is green, while the East/West street is red. Changes in state color are determined by the value of C "detecting" a car present on the East-West street(s).
+
+![image](https://github.com/lcsaszar01/Signal_Sages/assets/78165687/59580a2d-fd60-4695-9f06-5a8f22887549) [2]
+
+|References|
+|------------------------|
+|[1] Kogge, P. M. (2022). The Zen of Exotic Computing. United States: Society for Industrial and Applied Mathematics.|
+|[2] Ndjountche, T. (2016). Digital Electronics 3: Finite-state Machines. United Kingdom: Wiley.|
+
+ 
+/*****************************************<br>
+* Project 9 - Netflix Behavior Predictor <br>
+* Author(s): <br>
+
+Sarah Kopfer <skopfer@nd.edu><br>
+Anna Briamonte <abriamon@nd.edu><br>
+Gavin Carr <gcarr2@nd.edu><br>
+Allison Fleming <aflemin7@nd.edu><br>
+ *****************************************/<br>
+ 
+ 
+ 
+ /*****************************************<br>
+* Project 10 - Traffic Stop Simulator <br>
+* Author(s): <br>
+
+Zach Vincent <zvincent@nd.edu><br>
+Daniel Yu <dyu4@nd.edu><br>
+Andrew Mitchell <amitch27@nd.edu><br>
+ *****************************************/<br>
+
+This project is a simple controller for the traffic signals at a 4-way intersection. It takes in 4 1-bit inputs (n, e, s, w) which represent whether or not a car is at each of the four streets. It then determines what color the street lights should be, and outputs an 8-bit number representing the state of the lights with 2 bits for each direction. 00 represents a red light, 01 represents a yellow light, and 10 represents a green light. For example, the output 00100010 would represent green lights in the east and west directions. The chip is programmed only to change the lights when there are cars waiting at the cross street. If there are no cars with a red light at the intersection, the light will stay green in the current direction. Additionally, the green and yellow lights employ a minimum wait time so that the lights are guaranteed to stay the same for a certain number of clock cycles before allowing input changes to affect the state.

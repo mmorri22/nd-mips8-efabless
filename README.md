@@ -2,21 +2,22 @@
 
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](https://opensource.org/licenses/Apache-2.0) [![UPRJ_CI](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml/badge.svg)](https://github.com/efabless/caravel_project_example/actions/workflows/user_project_ci.yml) [![Caravel Build](https://github.com/efabless/caravel_project_example/actions/workflows/caravel_build.yml/badge.svg)](https://platform.efabless.com/shuttles/GFMPW-1?_gl=1*128mnaf*_gcl_au*MjA1NzQ1Njk3OS4xNzAyMzM3MDkw*_ga*MTE5OTU4MzM2OC4xNzAyMzM3MDkw*_ga_GHTCZK9NXD*MTcwMjM0OTc5OC4zLjEuMTcwMjM1NjUxNy4yNi4wLjA.)
 
-Professor: Matthew Morrison, Associate Teaching Professor, University of Notre Dame
-Email:  matt.morrison@nd.edu
-Push Date: 12/11/2023
+### Professor
 
-This project contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of NotreDame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
+Matthew Morrison, Associate Teaching Professor, University of Notre Dame<br>
+<matt.morrison@nd.edu><br>
 
-Teaching Assistants:
-Lindsay Falk	lfalk2@nd.edu
-David Finnell	dfinnell@nd.edu
-Ethan Lau	elau@nd.edu
-Drew Lair	dlair@nd.edu
-Dani Nah	hnah@nd.edu
-Richard McManus	rmcmanu2@nd.edu
-Mike Slusarczyk	mslusarc@nd.edu
-Zack Tyler	ztyler2@nd.edu
+### Teaching Assistants:
+Lindsay Falk	<lfalk2@nd.edu><br>
+David Finnell	<dfinnell@nd.edu><br>
+Ethan Lau	<elau@nd.edu><br>
+Drew Lair	<dlair@nd.edu><br>
+Dani Nah	<hnah@nd.edu><br>
+Richard McManus	<rmcmanu2@nd.edu><br>
+Mike Slusarczyk	<mslusarc@nd.edu><br>
+Zack Tyler	<ztyler2@nd.edu><br>
+
+This design contains the 12 group projects for the Fall 2023 CSE 30342 Digital Integrated Circuits course at the University of NotreDame. In this README.md file, the contents of their projects are detailed. The student's work is cited, and the ways to access their specific scope of the project through the wbs_sel_i select signal are detailed. Each student has been added as a collaborator to this project.
 
 
 /*****************************************

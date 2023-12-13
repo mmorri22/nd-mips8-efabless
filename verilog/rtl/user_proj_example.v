@@ -13,6 +13,7 @@
 `include "projects/proj9_skopfer.v"
 `include "projects/proj10_zvincent.v"
 `include "projects/proj11_jfrabut2.v"
+`include "projects/proj12_dmatthe6.v"
 
 module user_proj_example #(
 	parameter DWIDTH=8, BITS = 16
@@ -197,10 +198,22 @@ module user_proj_example #(
         .in_signal(io_in_wire),
         .out_signal(proj_output11_out[7:0])
 	);
+	
+	/* Project 12 - Dylan Matthews et al */
+	wire [BITS-1:0] proj_output12_out;
+	assign proj_output12_out[BITS-1:9] = 7'b0; // 9 output bits so set the rest (7) to 0
+
+	final_project_12 the_proj_12(
+		.clk(clk),
+		.rst(rst),
+		.number(io_in_wire[7:0]),  //Takes in a 8 bit number
+		.result(proj_output12_out[8]),
+		.rem_val(proj_output12_out[7:0])
+	);
 
 	/* The 192-16 MUX Itself */
 	/* Wires connecting from Projects to the MUX */	
-	mux192_to_16 the_output_mux(
+	mux208_to_16 the_output_mux(
 	
 		.input0(proj_output0_out),	// Proj0 - Prof. Morrison* Project Connection
 		.input1(proj_output1_out),	// Proj1 - Aidan Oblepias*, Leo Herman*, Allison Gentry*, Garrett Young*.
@@ -213,7 +226,8 @@ module user_proj_example #(
 		.input8(proj_output8_out),	// Proj8 - Lydia Csaszar*, Dan Schrage*, Kate Mealey*, Phyona Schrader*
 		.input9(proj_output9_out),	// Proj9 - Sarah Kopfer*, Anna Briamonte*, Gavin Carr*, Allison Fleming*
 		.input10(proj_output10_out),	// Proj10 - Zach Vincent*, Daniel Yu*, Andrew Mitchell*
-		.input11(proj_output11_out),	// Proj11 - Jacob Frabutt, Brigid Burns, et al
+		.input11(proj_output11_out),	// Proj11 - Jacob Frabutt*, Brigid Burns*, Rory St. Hilare*
+		.input12(proj_output12_out),	// Proj12 - Dylan Matthews, John Noonan, Patrick Condon, Tanner Morreale 
 		.sel(wbs_sel_i),
 		.outputs(mux_outputs)
 		
@@ -226,15 +240,15 @@ endmodule
 
 /******************************************************/
 /************* Connection MUX *************************/
-/*** Connect all 11 projects to the 16-bit output ****/
+/*** Connect all 12 projects to the 16-bit output ****/
 /******************************************************/
-module mux192_to_16
+module mux208_to_16
 #(
 	parameter INPUTS = 16
 )
 (
 	input  logic [INPUTS-1:0] input0, input1, input2, input3, input4, input5, input6, 
-	input  logic [INPUTS-1:0] input7, input8, input9, input10, input11,
+	input  logic [INPUTS-1:0] input7, input8, input9, input10, input11, input12,
 	input  logic [3:0]       sel, 
 	output  logic [INPUTS-1:0] outputs
 
@@ -254,7 +268,7 @@ module mux192_to_16
       4'b1001: outputs = input9;
       4'b1010: outputs = input10;
       4'b1011: outputs = input11;
-      4'b1100: outputs = input0;
+      4'b1100: outputs = input12;
       4'b1101: outputs = input0;
       4'b1110: outputs = input0;
       4'b1111: outputs = input0;

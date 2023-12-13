@@ -11,7 +11,7 @@ endmodule
 module FA_7 (input a, b, cin, output sum, cout);
 
 
-    wire n_sum, n_carry1, ncarry2;
+    wire n_sum, n_carry1, n_carry2;
    
     HA_7 U1( a, b, n_sum, n_carry1);
    

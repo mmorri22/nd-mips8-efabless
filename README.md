@@ -40,6 +40,7 @@ Here is the correlation between the wbs_sel_i signals and the student projects, 
 |1|0|0|1|verilog/rtl/projects/proj9_skopfer.v|Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming|
 |1|0|1|0|verilog/rtl/projects/proj10_zvincent.v|Zach Vincent, Daniel Yu, Andrew Mitchell|
 |1|0|1|1|verilog/rtl/projects/proj11_jfrabut2.v|Jacob Frabutt, Brigid Burns, Rory St. Hilare|
+|1|0|1|1|verilog/rtl/projects/proj12_dmatthe6.v|Dylan Matthews, John Noonan, Patrick Condon, Tanner Morreale |
  
 /*****************************************<br>
  * Project 0 - MIPS Demo <br>

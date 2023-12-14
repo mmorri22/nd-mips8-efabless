@@ -40,7 +40,7 @@ Here is the correlation between the wbs_sel_i signals and the student projects, 
 |1|0|0|1|verilog/rtl/projects/proj9_skopfer.v|Sarah Kopfer, Anna Briamonte, Gavin Carr, Allison Fleming|
 |1|0|1|0|verilog/rtl/projects/proj10_zvincent.v|Zach Vincent, Daniel Yu, Andrew Mitchell|
 |1|0|1|1|verilog/rtl/projects/proj11_jfrabut2.v|Jacob Frabutt, Brigid Burns, Rory St. Hilare|
-|1|0|1|1|verilog/rtl/projects/proj12_dmatthe6.v|Dylan Matthews, John Noonan, Patrick Condon, Tanner Morreale |
+|1|0|1|1|verilog/rtl/projects/proj12_dmatthe6.v|Dylan Matthews, John Noonan, Patrick Condon, Tanner Morreale|
  
 /*****************************************<br>
  * Project 0 - MIPS Demo <br>
@@ -409,3 +409,46 @@ Rory St. Hilaire <rsthila2@nd.edu><br>
  *****************************************/<br>
  
 Our project creates hardware to implement a simple encryption algorithm: simple DES. Simple DES takes in 8-bits of plaintext and 10-bit key. Since we only have 16-bits of input, the 2 most significant bits of the key are simply pre-set. This one 10-bit key then goes through some shift and permutation operations to create two 8-bit keys which are used internally. The plaintext and keys are then used as inputs to an encryption module. This module contains multiple steps of permutations, expansion, XOR, and shifting to generate the ciphertext. The full simple DES algorithm also implements something called switch functions, but because these require memory to be implemented, and due to the scope and time limitations of our project, we did not include this step. The output of our module is the 8-bit ciphertext that resulted from encryption.
+
+
+/*****************************************<br>
+* Project 12 - Even or Odd++ <br>
+* Author(s): <br>
+
+Dylan Matthews <dmatthe6@nd.edu><br>
+John Noonan <jnoonan3@nd.edu><br>
+Patrick Condon <pcondon2@nd.edu><br>
+Tanner Morreale <tmorreal@nd.edu><br>
+ *****************************************/<br>
+
+Our project has sequential objectives:
+1) Determine an input is odd or even
+
+2) If the input is odd:
+    - Find the remainder of the input divided by three - load this to an output
+    - If the remainder is zero - set the divisible by three variable to one indicating that the input is divisible by three
+    - Return the odd state, the remainder, and whether or not the input is divisible by three
+
+3) If the input is even:
+    - Find the remainder of the input divided by four - load this to an output
+    - If the remainder is zero - set the divisible by four variable to one indicating that the input is divisible by four
+    - Return the even state, the remainder, and whether or not the input is divisible by four
+
+We use seven states: Idle, find_last_digit, calculate, even_state, odd_state, divisible_3, and divisible_4 to accomplish this
+
+They function as described:
+
+Idle: The state reverted back to while the program awaits a new number input
+
+Find_last_digit: Isolates the last digit of the input
+
+Calculate: Uses the last digit of the input to determine whether its even or odd
+
+Odd: Sets the odd result equal to one if odd
+
+Even: Sets the odd result equal to zero if even
+
+Div_3: Calculates the remainder of an odd input divided by three. Sets the remainder rem_3 output to that remainder. If zero - indicates the number is divisible by 3, setting div_3 to 1. Returns FSM to Idle state.
+
+Div_4: Calculates the remainder of an even input divided by four. Sets the remainder rem_4 output to that remainder. If zero - indicates the number is divisible by 4, setting div_4 to 1. Returns FSM to Idle state.
+

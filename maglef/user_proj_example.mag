@@ -1,7 +1,7 @@
 magic
 tech gf180mcuD
 magscale 1 5
-timestamp 1702485320
+timestamp 1702585928
 << obsm1 >>
 rect 672 1538 279328 174078
 << metal2 >>
@@ -160,15 +160,20 @@ rect 263344 1538 263504 174078
 rect 271024 1538 271184 174078
 rect 278704 1538 278864 174078
 << obsm4 >>
-rect 96278 50969 102034 120839
-rect 102254 50969 109714 120839
-rect 109934 50969 117394 120839
-rect 117614 50969 125074 120839
-rect 125294 50969 132754 120839
-rect 132974 50969 140434 120839
-rect 140654 50969 148114 120839
-rect 148334 50969 155794 120839
-rect 156014 50969 157738 120839
+rect 80038 55449 86674 85783
+rect 86894 55449 94354 85783
+rect 94574 55449 102034 85783
+rect 102254 55449 109714 85783
+rect 109934 55449 117394 85783
+rect 117614 55449 125074 85783
+rect 125294 55449 132754 85783
+rect 132974 55449 140434 85783
+rect 140654 55449 148114 85783
+rect 148334 55449 155794 85783
+rect 156014 55449 163474 85783
+rect 163694 55449 171154 85783
+rect 171374 55449 178834 85783
+rect 179054 55449 182882 85783
 << labels >>
 rlabel metal3 s 279600 4256 280000 4312 6 io_in[0]
 port 1 nsew signal input
@@ -358,8 +363,8 @@ port 57 nsew signal input
 string FIXED_BBOX 0 0 280000 176000
 string LEFclass BLOCK
 string LEFview TRUE
-string GDS_END 23076418
-string GDS_FILE /mnt/wsl/docker-desktop-bind-mounts/Ubuntu-20.04/1a1b5913b98ec1d440424df602a0fe30bbde5e7051d80ccbbdc009e3566a7213/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_13_11_28/results/signoff/user_proj_example.magic.gds
-string GDS_START 491612
+string GDS_END 23037714
+string GDS_FILE /mnt/c/Users/mmorri22/nd-mips8-efabless/openlane/user_proj_example/runs/23_12_14_15_25/results/signoff/user_proj_example.magic.gds
+string GDS_START 522452
 << end >>
 

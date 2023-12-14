@@ -204,11 +204,14 @@ module user_proj_example #(
 	assign proj_output12_out[BITS-1:9] = 7'b0; // 9 output bits so set the rest (7) to 0
 
 	final_project_12 the_proj_12(
-		.clk(clk),
-		.rst(rst),
+		.clk,
+		.rst,
 		.number(io_in_wire[7:0]),  //Takes in a 8 bit number
-		.result(proj_output12_out[8]),
-		.rem_val(proj_output12_out[7:0])
+		.result(proj_output12_out[0]),    //Using a register output, 0 if the number is even, 1 if the number is odd
+		.rem_3(proj_output12_out[3:1]),     //output holding the remainer of our number divided by 3
+		.div_3(proj_output12_out[4]),           //output that is 1 if the nmber is divisible by 3 and 0 if it is not
+		.rem_4(proj_output12_out[7:5]),     //output holding the remainer of our number divided by 4
+		.div_4(proj_output12_out[8])           //output that is 1 if the number is divisible by 4 and 0 if it is not
 	);
 
 	/* The 192-16 MUX Itself */

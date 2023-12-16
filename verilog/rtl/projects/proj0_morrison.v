@@ -22,7 +22,6 @@ module mips
 )
 (
 	input  logic             clk, reset, 
-	input  logic [WIDTH-1:0] memdata, 
     output logic [WIDTH-1:0] adr, writedata
 );
 
@@ -32,6 +31,10 @@ module mips
    logic [3:0]  irwrite;
    logic [2:0]  alucontrol;
    logic [5:0]  op, funct;
+   
+   logic [WIDTH-1:0] memdata;
+   
+   logic [WIDTH-1:0] adr_wire, writedata_wire;
  
 	/* Instruction Fetch */
    assign op = instr[31:26];      
@@ -43,7 +46,14 @@ module mips
    datapath    #(WIDTH, REGBITS) 
                dp(clk, reset, memdata, alusrca, memtoreg, iord, pcen,
                   regwrite, regdst, pcsrc, alusrcb, irwrite, alucontrol,
-                  zero, instr, adr, writedata);
+                  zero, instr, adr_wire, writedata_wire);
+				  
+	// external memory for code and data
+	memory #(WIDTH) exmem(clk, memwrite, adr_wire, writedata_wire, memdata);
+	
+	assign adr = adr_wire;
+	assign writedata = writedata_wire;
+	
 endmodule
 
 module controller(input logic clk, reset, 
@@ -299,6 +309,46 @@ module alu #(parameter WIDTH = 8)
   mux4 resultmux(andresult, orresult, sumresult, sltresult, alucontrol[1:0], result);
   zerodetect #(WIDTH) zd(result, zero);
 endmodule
+
+
+// external memory accessed by MIPS
+module memory #(parameter WIDTH = 8)
+                 (input  logic             clk,
+                  input  logic             memwrite,
+                  input  logic [WIDTH-1:0] adr, writedata,
+                  output logic [WIDTH-1:0] memdata);
+
+  logic [31:0]      mem [2**(WIDTH-2)-1:0];
+  logic [31:0]      word;
+  logic [1:0]       bytesel;
+  logic [WIDTH-2:0] wordadr;
+
+  initial
+    $readmemh("proj0_memfile.dat", mem);
+
+  assign bytesel = adr[1:0];
+  assign wordadr = adr[WIDTH-1:2];
+
+  // read and write bytes from 32-bit word
+  always @(posedge clk)
+    if(memwrite) 
+      case (bytesel)
+        2'b00: mem[wordadr][7:0]   <= writedata;
+        2'b01: mem[wordadr][15:8]  <= writedata;
+        2'b10: mem[wordadr][23:16] <= writedata;
+        2'b11: mem[wordadr][31:24] <= writedata;
+      endcase
+
+   assign word = mem[wordadr];
+   always_comb
+     case (bytesel)
+       2'b00: memdata = word[7:0];
+       2'b01: memdata = word[15:8];
+       2'b10: memdata = word[23:16];
+       2'b11: memdata = word[31:24];
+     endcase
+endmodule
+
 
 
 module regfile #(parameter WIDTH = 8, REGBITS = 3)

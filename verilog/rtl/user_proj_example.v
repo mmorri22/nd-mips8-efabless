@@ -58,7 +58,7 @@ module user_proj_example #(
 	mips the_mips(
 		.clk(clk),
 		.reset(rst),
-		.memdata(io_in_wire[DWIDTH-1:0]),
+		//.memdata(io_in_wire[DWIDTH-1:0]),
 		.adr(proj_output0_out[BITS-1:DWIDTH]),
 		.writedata(proj_output0_out[DWIDTH-1:0])
 	);
